@@ -4,16 +4,22 @@ import StoreLayout from "./layouts/StoreLayout";
 
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Contact from "./pages/Contact";
 import Customizer from "./pages/Customizer";
+import Faq from "./pages/Faq";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import OrderSuccess from "./pages/OrderSuccess";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ProductDetails from "./pages/ProductDetails";
 import Products from "./pages/Products";
+import ReturnsExchanges from "./pages/ReturnsExchanges";
 
 import AdminLayout from "./components/admin/AdminLayout";
 import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
+import ScrollToTop from "./components/ScrollToTop";
 
+import AdminContact from "./pages/admin/AdminContact";
 import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminDesigns from "./pages/admin/AdminDesigns";
@@ -23,47 +29,64 @@ import AdminOrders from "./pages/admin/AdminOrders";
 
 function App() {
   return (
-    <Routes>
-      {/* Public store pages */}
-      <Route element={<StoreLayout />}>
-        <Route path="/" element={<Home />} />
+    <>
+      <ScrollToTop />
 
-        <Route path="/products" element={<Products />} />
+      <Routes>
+        {/* Public store pages */}
+        <Route element={<StoreLayout />}>
+          <Route path="/" element={<Home />} />
 
-        <Route path="/products/:productId" element={<ProductDetails />} />
+          <Route path="/products" element={<Products />} />
 
-        <Route path="/customizer" element={<Customizer />} />
+          <Route path="/products/:productId" element={<ProductDetails />} />
 
-        <Route path="/cart" element={<Cart />} />
+          <Route path="/customizer" element={<Customizer />} />
 
-        <Route path="/checkout" element={<Checkout />} />
+          <Route path="/cart" element={<Cart />} />
 
-        <Route path="/order-success/:orderNumber" element={<OrderSuccess />} />
+          <Route path="/checkout" element={<Checkout />} />
 
-        <Route path="*" element={<NotFound />} />
-      </Route>
+          <Route path="/faqs" element={<Faq />} />
 
-      {/* Admin login */}
-      <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/contact" element={<Contact />} />
 
-      {/* Protected admin pages */}
-      <Route element={<ProtectedAdminRoute />}>
-        <Route element={<AdminLayout />}>
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
-          <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/returns-exchanges" element={<ReturnsExchanges />} />
 
           <Route
-            path="/admin/orders/:orderId"
-            element={<AdminOrderDetails />}
+            path="/order-success/:orderNumber"
+            element={<OrderSuccess />}
           />
 
-          <Route path="/admin/customers" element={<AdminCustomers />} />
-
-          <Route path="/admin/designs" element={<AdminDesigns />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
-      </Route>
-    </Routes>
+
+        {/* Admin login */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        {/* Protected admin pages */}
+        <Route element={<ProtectedAdminRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+
+            <Route path="/admin/orders" element={<AdminOrders />} />
+
+            <Route
+              path="/admin/orders/:orderId"
+              element={<AdminOrderDetails />}
+            />
+
+            <Route path="/admin/customers" element={<AdminCustomers />} />
+
+            <Route path="/admin/designs" element={<AdminDesigns />} />
+
+            <Route path="/admin/contact" element={<AdminContact />} />
+          </Route>
+        </Route>
+      </Routes>
+    </>
   );
 }
 
