@@ -1,59 +1,124 @@
+import { motion } from "framer-motion";
 import { Link } from "react-router";
+
 import { useCart } from "../context/CartContext";
+
+const luxuryEase = [0.22, 1, 0.36, 1];
+
+const formatMoney = (value) =>
+  `${Number(value || 0).toLocaleString("en-EG")} EGP`;
+
+function MinusIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    >
+      <path d="M5 12h14" />
+    </svg>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    >
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
 
 function Cart() {
   const { cartItems, subtotal, removeFromCart, updateQuantity } = useCart();
 
   if (cartItems.length === 0) {
     return (
-      <section className="flex min-h-[70vh] flex-col items-center justify-center px-5 text-center">
-        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-neutral-500">
-          Your bag
-        </p>
+      <section className="flex min-h-[75svh] flex-col items-center justify-center px-5 py-20 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.7,
+            ease: luxuryEase,
+          }}
+          className="max-w-xl"
+        >
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-neutral-500">
+            Your Bag
+          </p>
 
-        <h1 className="mt-4 text-4xl font-black">Your cart is empty</h1>
+          <h1 className="mt-5 text-4xl font-semibold uppercase tracking-[0.06em] sm:text-6xl">
+            Your Bag Is Empty
+          </h1>
 
-        <p className="mt-4 max-w-md leading-7 text-neutral-500">
-          Add a TeeLab product or create your own custom T-shirt to start your
-          order.
-        </p>
+          <p className="mx-auto mt-6 max-w-md leading-7 text-neutral-500">
+            Discover TeeLab essentials or create a personalized T-shirt made
+            entirely by you.
+          </p>
 
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link
-            to="/products"
-            className="bg-black px-7 py-4 font-semibold text-white transition hover:bg-neutral-800"
-          >
-            Browse products
-          </Link>
+          <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link
+              to="/products"
+              className="bg-black px-8 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-neutral-800"
+            >
+              Browse Products
+            </Link>
 
-          <Link
-            to="/customizer"
-            className="border border-black px-7 py-4 font-semibold transition hover:bg-black hover:text-white"
-          >
-            Create Your Design
-          </Link>
-        </div>
+            <Link
+              to="/customizer"
+              className="border border-black px-8 py-4 text-xs font-semibold uppercase tracking-[0.2em] transition hover:bg-black hover:text-white"
+            >
+              Create Your Design
+            </Link>
+          </div>
+        </motion.div>
       </section>
     );
   }
 
+  const totalQuantity = cartItems.reduce(
+    (total, item) => total + Number(item.quantity || 0),
+    0,
+  );
+
   return (
-    <section className="mx-auto min-h-screen max-w-7xl px-5 py-12 sm:py-16 lg:px-8">
-      <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-neutral-500">
-          Your bag
+    <section className="mx-auto min-h-screen max-w-[1500px] px-5 py-14 sm:px-8 sm:py-20 lg:px-12">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.65,
+          ease: luxuryEase,
+        }}
+      >
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-neutral-500">
+          Shopping Bag
         </p>
 
-        <h1 className="mt-3 text-4xl font-black sm:text-5xl">Shopping cart</h1>
+        <div className="mt-4 flex flex-wrap items-end justify-between gap-5">
+          <h1 className="text-4xl font-semibold uppercase tracking-[0.06em] sm:text-6xl">
+            Your Bag
+          </h1>
 
-        <p className="mt-4 text-neutral-500">
-          Review your products before continuing to checkout.
-        </p>
-      </div>
+          <p className="text-sm text-neutral-500">
+            {totalQuantity} {totalQuantity === 1 ? "item" : "items"}
+          </p>
+        </div>
+      </motion.div>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-12">
-        <div className="divide-y divide-neutral-200 border-y border-neutral-200">
-          {cartItems.map((item) => {
+      <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_400px]">
+        <div className="border-t border-neutral-300">
+          {cartItems.map((item, index) => {
             const itemImage = item.previewImage || item.image;
 
             const itemName = item.productName || item.name || "TeeLab Product";
@@ -62,18 +127,26 @@ function Cart() {
 
             const itemSize = item.tshirtSize || item.selectedSize;
 
-            const itemTotal = Number(item.price) * item.quantity;
+            const itemTotal =
+              Number(item.price || 0) * Number(item.quantity || 1);
 
             return (
-              <article
+              <motion.article
                 key={item.cartItemId}
-                className="grid grid-cols-[100px_minmax(0,1fr)] gap-4 py-6 sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-6 sm:py-7"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.55,
+                  delay: index * 0.06,
+                  ease: luxuryEase,
+                }}
+                className="grid grid-cols-[110px_minmax(0,1fr)] gap-5 border-b border-neutral-300 py-7 sm:grid-cols-[180px_minmax(0,1fr)] sm:gap-8 sm:py-9"
               >
-                <div className="overflow-hidden bg-neutral-100">
+                <div className="aspect-[4/5] overflow-hidden bg-neutral-100">
                   <img
                     src={itemImage}
                     alt={itemName}
-                    className={`aspect-[4/5] h-full w-full ${
+                    className={`h-full w-full ${
                       item.isCustom ? "object-contain p-2" : "object-cover"
                     }`}
                   />
@@ -81,27 +154,29 @@ function Cart() {
 
                 <div className="flex min-w-0 flex-col justify-between">
                   <div>
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="min-w-0">
-                        <h2 className="truncate font-semibold sm:text-lg">
+                    <div className="flex items-start justify-between gap-5">
+                      <div>
+                        <h2 className="text-sm font-semibold uppercase tracking-[0.12em] sm:text-base">
                           {itemName}
                         </h2>
 
                         {item.isCustom && (
-                          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
-                            Custom design
+                          <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-500">
+                            Custom Design
                           </p>
                         )}
                       </div>
 
-                      <p className="shrink-0 font-semibold">{itemTotal} EGP</p>
+                      <p className="shrink-0 text-sm font-semibold sm:text-base">
+                        {formatMoney(itemTotal)}
+                      </p>
                     </div>
 
-                    <div className="mt-3 space-y-1 text-sm text-neutral-500">
+                    <div className="mt-5 space-y-2 text-xs text-neutral-500 sm:text-sm">
                       {itemColor && (
                         <p>
                           Color:{" "}
-                          <span className="capitalize text-neutral-700">
+                          <span className="capitalize text-black">
                             {itemColor}
                           </span>
                         </p>
@@ -110,44 +185,44 @@ function Cart() {
                       {itemSize && (
                         <p>
                           Size:{" "}
-                          <span className="text-neutral-700">{itemSize}</span>
+                          <span className="uppercase text-black">
+                            {itemSize}
+                          </span>
                         </p>
                       )}
 
                       <p>
-                        Unit price:{" "}
-                        <span className="text-neutral-700">
-                          {item.price} EGP
+                        Unit Price:{" "}
+                        <span className="text-black">
+                          {formatMoney(item.price)}
                         </span>
                       </p>
                     </div>
 
-                    {item.isCustom && item.designData && (
-                      <div className="mt-4">
-                        <Link
-                          to="/customizer"
-                          className="text-sm font-semibold underline underline-offset-4"
-                        >
-                          Create another design
-                        </Link>
-                      </div>
+                    {item.isCustom && (
+                      <Link
+                        to="/customizer"
+                        className="mt-5 inline-block border-b border-black pb-1 text-xs font-semibold"
+                      >
+                        Create Another Design
+                      </Link>
                     )}
                   </div>
 
-                  <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex w-fit items-center border border-neutral-300">
+                  <div className="mt-7 flex flex-wrap items-center justify-between gap-5">
+                    <div className="flex items-center border border-neutral-300">
                       <button
                         type="button"
                         aria-label={`Decrease quantity for ${itemName}`}
                         onClick={() =>
                           updateQuantity(item.cartItemId, item.quantity - 1)
                         }
-                        className="flex h-11 w-11 items-center justify-center text-lg transition hover:bg-neutral-100"
+                        className="flex h-11 w-11 items-center justify-center transition hover:bg-neutral-100"
                       >
-                        −
+                        <MinusIcon />
                       </button>
 
-                      <span className="min-w-11 text-center font-semibold">
+                      <span className="min-w-11 text-center text-sm font-semibold">
                         {item.quantity}
                       </span>
 
@@ -157,62 +232,78 @@ function Cart() {
                         onClick={() =>
                           updateQuantity(item.cartItemId, item.quantity + 1)
                         }
-                        className="flex h-11 w-11 items-center justify-center text-lg transition hover:bg-neutral-100"
+                        className="flex h-11 w-11 items-center justify-center transition hover:bg-neutral-100"
                       >
-                        +
+                        <PlusIcon />
                       </button>
                     </div>
 
                     <button
                       type="button"
                       onClick={() => removeFromCart(item.cartItemId)}
-                      className="w-fit text-sm text-neutral-500 underline underline-offset-4 transition hover:text-black"
+                      className="text-xs text-neutral-500 underline underline-offset-4 transition hover:text-black"
                     >
                       Remove
                     </button>
                   </div>
                 </div>
-              </article>
+              </motion.article>
             );
           })}
         </div>
 
-        <aside className="h-fit border border-neutral-200 bg-neutral-50 p-6 sm:p-7 lg:sticky lg:top-28">
-          <h2 className="text-xl font-bold">Order summary</h2>
+        <aside className="h-fit border border-neutral-300 bg-white p-6 sm:p-8 lg:sticky lg:top-[150px]">
+          <h2 className="text-xl font-semibold uppercase tracking-[0.1em]">
+            Order Summary
+          </h2>
 
-          <div className="mt-7 space-y-4">
-            <div className="flex justify-between gap-5">
-              <span className="text-neutral-600">Items</span>
+          <div className="mt-8 space-y-5">
+            <div className="flex items-center justify-between gap-5">
+              <span className="text-sm text-neutral-600">Items</span>
 
-              <span className="font-semibold">
-                {cartItems.reduce((total, item) => total + item.quantity, 0)}
-              </span>
+              <span className="text-sm font-semibold">{totalQuantity}</span>
             </div>
 
-            <div className="flex justify-between gap-5 border-b border-neutral-300 pb-5">
-              <span className="text-neutral-600">Subtotal</span>
+            <div className="flex items-center justify-between gap-5 border-b border-neutral-300 pb-6">
+              <span className="text-sm text-neutral-600">Subtotal</span>
 
-              <span className="font-semibold">{subtotal} EGP</span>
+              <span className="font-semibold">{formatMoney(subtotal)}</span>
+            </div>
+
+            <div className="flex items-center justify-between gap-5">
+              <span className="text-sm text-neutral-600">Delivery</span>
+
+              <span className="text-sm">Calculated at checkout</span>
             </div>
           </div>
 
-          <p className="mt-5 text-sm leading-6 text-neutral-500">
-            Shipping fees will be calculated during checkout.
-          </p>
+          <div className="mt-8 flex items-center justify-between border-t border-neutral-300 pt-6">
+            <span className="font-semibold uppercase tracking-[0.1em]">
+              Total
+            </span>
+
+            <span className="text-xl font-semibold">
+              {formatMoney(subtotal)}
+            </span>
+          </div>
 
           <Link
             to="/checkout"
-            className="mt-7 block bg-black px-6 py-4 text-center font-semibold text-white transition hover:bg-neutral-800"
+            className="mt-8 block bg-black px-6 py-5 text-center text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-neutral-800"
           >
-            Proceed to checkout
+            Proceed to Checkout
           </Link>
 
           <Link
             to="/products"
-            className="mt-3 block border border-black px-6 py-4 text-center font-semibold transition hover:bg-black hover:text-white"
+            className="mt-3 block border border-black px-6 py-5 text-center text-xs font-semibold uppercase tracking-[0.2em] transition hover:bg-black hover:text-white"
           >
-            Continue shopping
+            Continue Shopping
           </Link>
+
+          <p className="mt-5 text-center text-xs leading-5 text-neutral-500">
+            Free shipping on orders above EGP 2,000.
+          </p>
         </aside>
       </div>
     </section>
