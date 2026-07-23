@@ -961,9 +961,9 @@ export default function Checkout() {
               {submitting ? "Completing order..." : "Complete Order"}
             </button>
 
-            <p className="mt-8 border-t border-neutral-200 pt-6 text-center text-xs text-neutral-500">
+            {/* <p className="mt-8 border-t border-neutral-200 pt-6 text-center text-xs text-neutral-500">
               © 2026 TeeLab. All rights reserved.
-            </p>
+            </p> */}
           </div>
         </main>
 
