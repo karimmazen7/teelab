@@ -1,19 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import { useCart } from "../context/CartContext";
 import { products } from "../data/products";
-
-const luxuryNames = [
-  "Classic Tee",
-  "Essential Tee",
-  "Vintage Tee",
-  "Heavy Tee",
-  "Relaxed Tee",
-  "Signature Tee",
-  "Premium Tee",
-  "Studio Tee",
-];
 
 const availableSizes = ["S", "M", "L", "XL"];
 
@@ -70,27 +59,14 @@ function Home() {
   const { addToCart } = useCart();
 
   const [quickAddProduct, setQuickAddProduct] = useState(null);
-
   const [selectedSize, setSelectedSize] = useState("M");
-
   const [selectedColor, setSelectedColor] = useState("");
-
   const [quantity, setQuantity] = useState(1);
-
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const heroImage = "/images/hero1.png";
 
-  const featuredProducts = useMemo(
-    () =>
-      products.map((product, index) => ({
-        ...product,
-
-        displayName: luxuryNames[index % luxuryNames.length],
-      })),
-
-    [],
-  );
+  const featuredProducts = products;
 
   useEffect(() => {
     if (!quickAddProduct) {
@@ -103,7 +79,7 @@ function Home() {
 
     const handleEscape = (event) => {
       if (event.key === "Escape") {
-        closeQuickAdd();
+        setQuickAddProduct(null);
       }
     };
 
@@ -111,7 +87,6 @@ function Home() {
 
     return () => {
       document.body.style.overflow = previousOverflow;
-
       window.removeEventListener("keydown", handleEscape);
     };
   }, [quickAddProduct]);
@@ -124,7 +99,7 @@ function Home() {
       "Black";
 
     setQuickAddProduct(product);
-    setSelectedSize("M");
+    setSelectedSize(product.sizes?.[0] || "M");
     setSelectedColor(firstColor);
     setQuantity(1);
     setActiveImageIndex(0);
@@ -135,9 +110,7 @@ function Home() {
   };
 
   const handleAddToCart = () => {
-    if (!quickAddProduct) {
-      return;
-    }
+    if (!quickAddProduct) return;
 
     for (let index = 0; index < quantity; index += 1) {
       addToCart(quickAddProduct, selectedSize, selectedColor);
@@ -147,9 +120,7 @@ function Home() {
   };
 
   const handleBuyNow = () => {
-    if (!quickAddProduct) {
-      return;
-    }
+    if (!quickAddProduct) return;
 
     for (let index = 0; index < quantity; index += 1) {
       addToCart(quickAddProduct, selectedSize, selectedColor);
@@ -160,17 +131,19 @@ function Home() {
   };
 
   const quickAddImages = quickAddProduct
-    ? [
-        quickAddProduct.image,
-
-        ...(Array.isArray(quickAddProduct.images)
-          ? quickAddProduct.images
-          : []),
-      ].filter(Boolean)
+    ? Array.from(
+        new Set([
+          quickAddProduct.image,
+          ...(Array.isArray(quickAddProduct.images)
+            ? quickAddProduct.images
+            : []),
+        ]),
+      ).filter(Boolean)
     : [];
 
   return (
     <>
+      {/* Hero */}
       <section
         className="relative flex min-h-[calc(100svh-118px)] items-center justify-center overflow-hidden bg-black"
         style={{
@@ -182,15 +155,15 @@ function Home() {
         <div className="absolute inset-0 bg-black/40" />
 
         <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-5 text-center text-white">
-          <p className="text-xs font-semibold uppercase tracking-[0.38em] sm:text-sm">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.34em] sm:text-xs">
             SS/26 Collection
           </p>
 
-          <h1 className="mt-6 max-w-5xl text-5xl font-semibold uppercase leading-[0.95] tracking-[0.06em] sm:text-7xl lg:text-[96px]">
+          <h1 className="mt-5 max-w-5xl text-[42px] font-semibold uppercase leading-[0.98] tracking-[0.05em] sm:text-[60px] lg:text-[76px]">
             Wear What You Create
           </h1>
 
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
+          <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Link
               to="/products"
               className="min-w-[190px] border border-white px-7 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-white transition duration-300 hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
@@ -208,6 +181,7 @@ function Home() {
         </div>
       </section>
 
+      {/* Products */}
       <section className="bg-white px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto max-w-[1600px]">
           <div className="mb-12 flex items-end justify-between gap-5">
@@ -235,12 +209,12 @@ function Home() {
                 <div className="relative aspect-[4/5] overflow-hidden bg-neutral-100">
                   <Link
                     to={`/products/${product.id}`}
-                    aria-label={`View ${product.displayName}`}
+                    aria-label={`View ${product.name}`}
                     className="block h-full w-full"
                   >
                     <img
                       src={product.image}
-                      alt={product.displayName}
+                      alt={product.name}
                       loading={index > 3 ? "lazy" : "eager"}
                       decoding="async"
                       width="800"
@@ -253,7 +227,7 @@ function Home() {
 
                   <button
                     type="button"
-                    aria-label={`Quick add ${product.displayName}`}
+                    aria-label={`Quick add ${product.name}`}
                     onClick={() => openQuickAdd(product)}
                     className="absolute bottom-3 right-3 flex h-12 w-12 translate-y-4 items-center justify-center bg-white text-black opacity-0 shadow-sm transition duration-300 ease-out hover:bg-black hover:text-white focus-visible:translate-y-0 focus-visible:opacity-100 group-hover:translate-y-0 group-hover:opacity-100"
                   >
@@ -264,7 +238,7 @@ function Home() {
                 <div className="pt-5">
                   <Link to={`/products/${product.id}`}>
                     <h3 className="text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm">
-                      {product.displayName}
+                      {product.name}
                     </h3>
                   </Link>
 
@@ -285,6 +259,7 @@ function Home() {
         </div>
       </section>
 
+      {/* Custom design */}
       <section className="bg-neutral-100 px-5 py-24 text-center sm:px-8 sm:py-32">
         <div className="mx-auto max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-neutral-500">
@@ -309,6 +284,7 @@ function Home() {
         </div>
       </section>
 
+      {/* Quick-add modal */}
       {quickAddProduct && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 p-3 sm:p-6"
@@ -321,7 +297,7 @@ function Home() {
           <div
             role="dialog"
             aria-modal="true"
-            aria-label={`Quick add ${quickAddProduct.displayName}`}
+            aria-label={`Quick add ${quickAddProduct.name}`}
             className="relative grid max-h-[92svh] w-full max-w-5xl overflow-y-auto bg-white md:grid-cols-2"
           >
             <button
@@ -339,7 +315,7 @@ function Home() {
                   src={
                     quickAddImages[activeImageIndex] || quickAddProduct.image
                   }
-                  alt={quickAddProduct.displayName}
+                  alt={quickAddProduct.name}
                   className="h-full w-full object-cover"
                 />
               </div>
@@ -366,7 +342,7 @@ function Home() {
             <div className="flex flex-col p-6 sm:p-10">
               <div className="pr-12">
                 <h2 className="text-xl font-semibold uppercase tracking-[0.16em] sm:text-2xl">
-                  {quickAddProduct.displayName}
+                  {quickAddProduct.name}
                 </h2>
 
                 <p className="mt-4 text-lg tracking-[0.12em] text-neutral-600">
@@ -390,7 +366,10 @@ function Home() {
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-3">
-                  {availableSizes.map((size) => (
+                  {(quickAddProduct.sizes?.length
+                    ? quickAddProduct.sizes
+                    : availableSizes
+                  ).map((size) => (
                     <button
                       type="button"
                       key={size}

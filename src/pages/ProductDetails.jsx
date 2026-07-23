@@ -501,7 +501,7 @@ function ProductDetails() {
         <section className="mx-auto max-w-[1700px] px-4 pb-24 sm:px-6 lg:px-8 lg:pb-32">
           <div className="mb-9 flex items-end justify-between">
             <h2 className="text-xl font-medium uppercase tracking-[0.2em] sm:text-2xl">
-              You May Also Like
+              Related products
             </h2>
 
             <Link

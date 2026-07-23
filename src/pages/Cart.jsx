@@ -39,7 +39,16 @@ function PlusIcon() {
 }
 
 function Cart() {
-  const { cartItems, subtotal, removeFromCart, updateQuantity } = useCart();
+  const {
+    cartItems,
+    cartCount,
+    subtotal,
+    removeFromCart,
+    increaseQuantity,
+    decreaseQuantity,
+    clearCart,
+    getCartItemKey,
+  } = useCart();
 
   if (cartItems.length === 0) {
     return (
@@ -54,11 +63,11 @@ function Cart() {
           className="max-w-xl"
         >
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-neutral-500">
-            Your Bag
+            Cart
           </p>
 
           <h1 className="mt-5 text-4xl font-semibold uppercase tracking-[0.06em] sm:text-6xl">
-            Your Bag Is Empty
+            Your Cart Is Empty
           </h1>
 
           <p className="mx-auto mt-6 max-w-md leading-7 text-neutral-500">
@@ -86,11 +95,6 @@ function Cart() {
     );
   }
 
-  const totalQuantity = cartItems.reduce(
-    (total, item) => total + Number(item.quantity || 0),
-    0,
-  );
-
   return (
     <section className="mx-auto min-h-screen max-w-[1500px] px-5 py-14 sm:px-8 sm:py-20 lg:px-12">
       <motion.div
@@ -102,23 +106,35 @@ function Cart() {
         }}
       >
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-neutral-500">
-          Shopping Bag
+          Shopping Cart
         </p>
 
         <div className="mt-4 flex flex-wrap items-end justify-between gap-5">
-          <h1 className="text-4xl font-semibold uppercase tracking-[0.06em] sm:text-6xl">
-            Your Bag
-          </h1>
+          <div>
+            <h1 className="text-4xl font-semibold uppercase tracking-[0.06em] sm:text-6xl">
+              Cart
+            </h1>
 
-          <p className="text-sm text-neutral-500">
-            {totalQuantity} {totalQuantity === 1 ? "item" : "items"}
-          </p>
+            <p className="mt-4 text-sm text-neutral-500">
+              {cartCount} {cartCount === 1 ? "item" : "items"}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={clearCart}
+            className="text-xs uppercase tracking-[0.14em] text-neutral-500 underline underline-offset-4 transition hover:text-black"
+          >
+            Clear Cart
+          </button>
         </div>
       </motion.div>
 
       <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_400px]">
         <div className="border-t border-neutral-300">
           {cartItems.map((item, index) => {
+            const cartItemKey = getCartItemKey(item);
+
             const itemImage = item.previewImage || item.image;
 
             const itemName = item.productName || item.name || "TeeLab Product";
@@ -128,11 +144,12 @@ function Cart() {
             const itemSize = item.tshirtSize || item.selectedSize;
 
             const itemTotal =
-              Number(item.price || 0) * Number(item.quantity || 1);
+              (Number(item.price) || 0) *
+              Math.max(1, Number(item.quantity) || 1);
 
             return (
               <motion.article
-                key={item.cartItemId}
+                key={cartItemKey}
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
@@ -214,10 +231,9 @@ function Cart() {
                       <button
                         type="button"
                         aria-label={`Decrease quantity for ${itemName}`}
-                        onClick={() =>
-                          updateQuantity(item.cartItemId, item.quantity - 1)
-                        }
-                        className="flex h-11 w-11 items-center justify-center transition hover:bg-neutral-100"
+                        onClick={() => decreaseQuantity(cartItemKey)}
+                        disabled={Number(item.quantity) <= 1}
+                        className="flex h-11 w-11 items-center justify-center transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-30"
                       >
                         <MinusIcon />
                       </button>
@@ -229,9 +245,7 @@ function Cart() {
                       <button
                         type="button"
                         aria-label={`Increase quantity for ${itemName}`}
-                        onClick={() =>
-                          updateQuantity(item.cartItemId, item.quantity + 1)
-                        }
+                        onClick={() => increaseQuantity(cartItemKey)}
                         className="flex h-11 w-11 items-center justify-center transition hover:bg-neutral-100"
                       >
                         <PlusIcon />
@@ -240,7 +254,7 @@ function Cart() {
 
                     <button
                       type="button"
-                      onClick={() => removeFromCart(item.cartItemId)}
+                      onClick={() => removeFromCart(cartItemKey)}
                       className="text-xs text-neutral-500 underline underline-offset-4 transition hover:text-black"
                     >
                       Remove
@@ -261,7 +275,7 @@ function Cart() {
             <div className="flex items-center justify-between gap-5">
               <span className="text-sm text-neutral-600">Items</span>
 
-              <span className="text-sm font-semibold">{totalQuantity}</span>
+              <span className="text-sm font-semibold">{cartCount}</span>
             </div>
 
             <div className="flex items-center justify-between gap-5 border-b border-neutral-300 pb-6">

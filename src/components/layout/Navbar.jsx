@@ -108,9 +108,7 @@ function Navbar() {
   useEffect(() => {
     const drawerOpen = cartOpen || mobileMenuOpen;
 
-    if (!drawerOpen) {
-      return undefined;
-    }
+    if (!drawerOpen) return undefined;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -173,20 +171,7 @@ function Navbar() {
               </NavLink>
 
               <NavLink to="/products" className={navLinkClass}>
-                T-Shirts
-                <span className="absolute bottom-0 left-0 h-px w-0 bg-black transition-all duration-300 group-hover:w-full" />
-              </NavLink>
-
-              <NavLink
-                to="/products?category=sweatpants"
-                className={navLinkClass}
-              >
-                Sweatpants
-                <span className="absolute bottom-0 left-0 h-px w-0 bg-black transition-all duration-300 group-hover:w-full" />
-              </NavLink>
-
-              <NavLink to="/products?category=zipper" className={navLinkClass}>
-                Zipper
+                Unisex
                 <span className="absolute bottom-0 left-0 h-px w-0 bg-black transition-all duration-300 group-hover:w-full" />
               </NavLink>
 
@@ -199,7 +184,7 @@ function Navbar() {
 
           <Link
             to="/"
-            className="absolute left-1/2 -translate-x-1/2 text-2xl font-black uppercase tracking-[-0.05em] sm:text-3xl"
+            className="absolute left-1/2 -translate-x-1/2 text-[24px] font-semibold uppercase tracking-[-0.05em] text-black md:text-[26px]"
           >
             TeeLab
           </Link>
@@ -231,6 +216,7 @@ function Navbar() {
         </nav>
       </motion.header>
 
+      {/* Mobile menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
@@ -258,7 +244,7 @@ function Navbar() {
                 <Link
                   to="/"
                   onClick={closeMenus}
-                  className="text-2xl font-black uppercase tracking-[-0.05em]"
+                  className="text-[24px] font-semibold uppercase tracking-[-0.05em] text-black md:text-[26px]"
                 >
                   TeeLab
                 </Link>
@@ -275,9 +261,7 @@ function Navbar() {
               <div className="mt-16 flex flex-col gap-7">
                 {[
                   ["Home", "/"],
-                  ["T-Shirts", "/products"],
-                  ["Sweatpants", "/products?category=sweatpants"],
-                  ["Zipper", "/products?category=zipper"],
+                  ["Unisex", "/products"],
                   ["Create Your Design", "/customizer"],
                 ].map(([label, path]) => (
                   <Link
@@ -304,6 +288,7 @@ function Navbar() {
         )}
       </AnimatePresence>
 
+      {/* Shopping bag */}
       <AnimatePresence>
         {cartOpen && (
           <>
@@ -333,7 +318,7 @@ function Navbar() {
               <div className="flex h-20 items-center justify-between border-b border-neutral-200 px-6">
                 <div>
                   <p className="text-lg font-semibold uppercase tracking-[0.12em]">
-                    Your Bag
+                    Cart
                   </p>
 
                   <p className="mt-1 text-xs text-neutral-500">
@@ -352,25 +337,25 @@ function Navbar() {
 
               {cartItems.length === 0 ? (
                 <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
-                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-neutral-500">
+                  {/* <p className="text-xs font-semibold uppercase tracking-[0.25em] text-neutral-500">
                     Your Bag
-                  </p>
+                  </p> */}
 
                   <h2 className="mt-4 text-2xl font-semibold uppercase">
-                    Your bag is empty
+                    Your cart is empty
                   </h2>
 
-                  <p className="mt-4 text-sm leading-6 text-neutral-500">
+                  {/* <p className="mt-4 text-sm leading-6 text-neutral-500">
                     Explore TeeLab essentials or create a personalized design.
-                  </p>
+                  </p> */}
 
-                  <Link
+                  {/* <Link
                     to="/products"
                     onClick={closeMenus}
                     className="mt-8 w-full bg-black px-6 py-4 text-center text-xs font-semibold uppercase tracking-[0.2em] text-white"
                   >
                     Continue Shopping
-                  </Link>
+                  </Link> */}
 
                   <Link
                     to="/customizer"
@@ -512,21 +497,21 @@ function Navbar() {
                       Checkout
                     </Link>
 
-                    <Link
+                    {/* <Link
                       to="/cart"
                       onClick={closeMenus}
                       className="mt-3 block border border-black px-6 py-4 text-center text-xs font-semibold uppercase tracking-[0.2em] transition hover:bg-black hover:text-white"
                     >
                       View Bag
-                    </Link>
+                    </Link> */}
 
-                    <button
+                    {/* <button
                       type="button"
                       onClick={() => setCartOpen(false)}
                       className="mt-4 w-full text-center text-xs underline underline-offset-4"
                     >
                       Continue Shopping
-                    </button>
+                    </button> */}
                   </div>
                 </>
               )}

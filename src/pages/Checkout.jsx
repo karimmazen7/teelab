@@ -1,12 +1,10 @@
-import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
-import LocationPicker from "../components/checkout/LocationPicker";
 import { useCart } from "../context/CartContext";
 import { placeOrder } from "../services/orderService";
 
-const governorates = [
+const egyptGovernorates = [
   "Cairo",
   "Giza",
   "Alexandria",
@@ -45,19 +43,11 @@ const initialCustomer = {
 
 const initialAddress = {
   country: "Egypt",
-  governorate: "",
+  governorate: "Giza",
   city: "",
-  area: "",
   streetName: "",
-  buildingNumber: "",
-  floorNumber: "",
   apartmentNumber: "",
-  landmark: "",
   postalCode: "",
-  deliveryNotes: "",
-  latitude: null,
-  longitude: null,
-  accuracy: null,
 };
 
 const initialBillingAddress = {
@@ -67,33 +57,65 @@ const initialBillingAddress = {
   address: "",
   apartment: "",
   city: "",
-  governorate: "",
+  governorate: "Giza",
   postalCode: "",
   phone: "",
 };
 
 const fieldClass = (hasError = false) =>
   [
-    "h-14 w-full rounded-xl border bg-white px-[18px]",
-    "text-[15px] text-black outline-none",
-    "transition duration-200",
-    "placeholder:text-neutral-500",
-    "focus:border-black focus:shadow-[0_0_0_3px_rgba(0,0,0,0.06)]",
-    hasError ? "border-red-500" : "border-[#DADADA]",
-  ].join(" ");
-
-const textareaClass = (hasError = false) =>
-  [
-    "min-h-28 w-full resize-y rounded-xl border bg-white px-[18px] py-4",
-    "text-[15px] text-black outline-none",
-    "transition duration-200",
-    "placeholder:text-neutral-500",
-    "focus:border-black focus:shadow-[0_0_0_3px_rgba(0,0,0,0.06)]",
-    hasError ? "border-red-500" : "border-[#DADADA]",
+    "h-[58px] w-full rounded-2xl border bg-white px-4",
+    "text-[13.5px] text-black outline-none transition",
+    "placeholder:text-[13.5px] placeholder:text-neutral-500",
+    "focus:border-black focus:ring-1 focus:ring-black",
+    hasError
+      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+      : "border-neutral-300",
   ].join(" ");
 
 const formatMoney = (value) =>
   `EGP ${Number(value || 0).toLocaleString("en-EG")}`;
+
+function ShoppingBagIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className="h-[22px] w-[22px] md:h-6 md:w-6"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5.5 8.5h13l1 12h-15l1-12Z" />
+      <path d="M8.5 9V6.5a3.5 3.5 0 0 1 7 0V9" />
+    </svg>
+  );
+}
+
+function CheckoutNavbar() {
+  return (
+    <header className="w-full border-b border-neutral-200 bg-white">
+      <div className="relative mx-auto h-[60px] w-full max-w-[1280px] md:h-[68px]">
+        <Link
+          to="/"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[22px] font-semibold uppercase tracking-[-0.06em] text-black no-underline md:text-[28px]"
+        >
+          TeeLab
+        </Link>
+
+        <Link
+          to="/cart"
+          aria-label="Go to cart"
+          className="absolute right-5 top-1/2 inline-flex -translate-y-1/2 items-center justify-center text-black transition hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:right-32"
+        >
+          <ShoppingBagIcon />
+        </Link>
+      </div>
+    </header>
+  );
+}
 
 function ChevronIcon({ open = false }) {
   return (
@@ -113,9 +135,7 @@ function ChevronIcon({ open = false }) {
 }
 
 function ErrorMessage({ children }) {
-  if (!children) {
-    return null;
-  }
+  if (!children) return null;
 
   return <p className="mt-2 text-xs text-red-600">{children}</p>;
 }
@@ -130,6 +150,7 @@ function FloatingField({
   error,
   required = false,
   inputMode,
+  placeholder,
 }) {
   return (
     <label className="block">
@@ -142,7 +163,7 @@ function FloatingField({
         type={type}
         autoComplete={autoComplete}
         inputMode={inputMode}
-        placeholder={`${label}${required ? "" : " (optional)"}`}
+        placeholder={placeholder || `${label}${required ? "" : " (optional)"}`}
         aria-invalid={Boolean(error)}
         className={fieldClass(Boolean(error))}
       />
@@ -167,13 +188,9 @@ function OrderSummary({
       <div className="space-y-5">
         {cartItems.map((item) => {
           const image = item.previewImage || item.image;
-
           const name = item.productName || item.name || "TeeLab Product";
-
           const size = item.tshirtSize || item.selectedSize;
-
           const color = item.tshirtColor || item.selectedColor;
-
           const itemTotal =
             Number(item.price || 0) * Number(item.quantity || 1);
 
@@ -199,22 +216,22 @@ function OrderSummary({
               </div>
 
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-black">
+                <p className="truncate text-[13.5px] font-medium text-black">
                   {name}
                 </p>
 
-                <p className="mt-1 text-xs text-[#666]">
+                <p className="mt-1 text-xs text-neutral-500">
                   {[color, size].filter(Boolean).join(" / ")}
                 </p>
 
                 {item.isCustom && (
-                  <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#666]">
+                  <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
                     Custom design
                   </p>
                 )}
               </div>
 
-              <p className="whitespace-nowrap text-sm font-medium">
+              <p className="whitespace-nowrap text-[13px] font-medium">
                 {formatMoney(itemTotal)}
               </p>
             </article>
@@ -227,46 +244,45 @@ function OrderSummary({
           value={discountCode}
           onChange={(event) => setDiscountCode(event.target.value)}
           placeholder="Discount code"
-          className="h-14 min-w-0 flex-1 rounded-xl border border-[#DADADA] bg-white px-[18px] outline-none transition duration-200 focus:border-black focus:shadow-[0_0_0_3px_rgba(0,0,0,0.06)]"
+          className="h-[52px] min-w-0 flex-1 rounded-xl border border-neutral-300 bg-white px-[15px] text-[13px] text-black outline-none transition placeholder:text-neutral-500 focus:border-black focus:ring-1 focus:ring-black"
         />
 
         <button
           type="button"
           disabled={!discountCode.trim()}
           onClick={onApplyDiscount}
-          className="h-14 rounded-xl border border-[#E6E6E6] bg-[#EFEFEF] px-5 font-semibold text-[#666] transition duration-200 hover:bg-[#E5E5E5] disabled:cursor-not-allowed disabled:opacity-50"
+          className="h-[52px] rounded-xl border border-neutral-200 bg-neutral-200 px-5 text-[13px] font-semibold text-neutral-600 transition hover:bg-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Apply
         </button>
       </div>
 
       {discountMessage && (
-        <p className="mt-2 text-xs text-[#666]">{discountMessage}</p>
+        <p className="mt-2 text-xs text-neutral-500">{discountMessage}</p>
       )}
 
       <div className="mt-9 space-y-4">
         <div className="flex items-center justify-between gap-5">
-          <span className="text-sm text-[#333]">Subtotal</span>
-
-          <span className="text-sm">{formatMoney(subtotal)}</span>
+          <span className="text-[13.5px] text-black">Subtotal</span>
+          <span className="text-[13.5px] text-black">
+            {formatMoney(subtotal)}
+          </span>
         </div>
 
         <div className="flex items-center justify-between gap-5">
-          <span className="text-sm text-[#333]">Shipping</span>
-
-          <span className="text-sm">
+          <span className="text-[13.5px] text-black">Shipping</span>
+          <span className="text-[13.5px] text-black">
             {deliveryFee ? formatMoney(deliveryFee) : "Free"}
           </span>
         </div>
 
-        <div className="border-t border-[#E6E6E6] pt-5">
+        <div className="border-t border-neutral-200 pt-5">
           <div className="flex items-end justify-between gap-5">
-            <span className="text-lg font-semibold">Total</span>
+            <span className="text-[17px] font-bold text-black">Total</span>
 
             <div className="text-right">
-              <span className="mr-2 text-xs text-[#666]">EGP</span>
-
-              <span className="text-2xl font-bold">
+              <span className="mr-2 text-xs text-neutral-500">EGP</span>
+              <span className="text-[22px] font-bold text-black">
                 {Number(total || 0).toLocaleString("en-EG")}
               </span>
             </div>
@@ -279,38 +295,24 @@ function OrderSummary({
 
 export default function Checkout() {
   const navigate = useNavigate();
-
   const { cartItems, subtotal, clearCart } = useCart();
 
   const [customer, setCustomer] = useState(initialCustomer);
-
   const [address, setAddress] = useState(initialAddress);
-
+  const [governorate, setGovernorate] = useState("Giza");
   const [billingAddress, setBillingAddress] = useState(initialBillingAddress);
 
   const [useDifferentBilling, setUseDifferentBilling] = useState(false);
-
-  const [confirmed, setConfirmed] = useState(false);
-
   const [emailMarketing, setEmailMarketing] = useState(false);
-
   const [saveInformation, setSaveInformation] = useState(false);
-
   const [summaryOpen, setSummaryOpen] = useState(false);
-
   const [discountCode, setDiscountCode] = useState("");
-
   const [discountMessage, setDiscountMessage] = useState("");
-
   const [errors, setErrors] = useState({});
-
   const [submitting, setSubmitting] = useState(false);
-
   const [error, setError] = useState("");
 
-  // Existing TeeLab shipping logic is preserved.
   const deliveryFee = subtotal >= 1500 ? 0 : 75;
-
   const total = Number(subtotal) + Number(deliveryFee);
 
   const changeCustomer = (key) => (event) => {
@@ -338,6 +340,22 @@ export default function Checkout() {
     setErrors((current) => ({
       ...current,
       [key]: "",
+    }));
+  };
+
+  const changeGovernorate = (event) => {
+    const value = event.target.value;
+
+    setGovernorate(value);
+
+    setAddress((current) => ({
+      ...current,
+      governorate: value,
+    }));
+
+    setErrors((current) => ({
+      ...current,
+      governorate: "",
     }));
   };
 
@@ -384,7 +402,7 @@ export default function Checkout() {
       nextErrors.city = "City is required.";
     }
 
-    if (!address.governorate.trim()) {
+    if (!governorate.trim()) {
       nextErrors.governorate = "Governorate is required.";
     }
 
@@ -410,10 +428,6 @@ export default function Checkout() {
       }
     }
 
-    if (!confirmed) {
-      nextErrors.confirmed = "Confirm that the order information is correct.";
-    }
-
     setErrors(nextErrors);
 
     return Object.keys(nextErrors).length === 0;
@@ -425,9 +439,7 @@ export default function Checkout() {
   );
 
   const applyDiscount = () => {
-    if (!discountCode.trim()) {
-      return;
-    }
+    if (!discountCode.trim()) return;
 
     setDiscountMessage("This discount code is not currently available.");
   };
@@ -435,9 +447,7 @@ export default function Checkout() {
   async function submit(event) {
     event.preventDefault();
 
-    if (submitting || !validateForm()) {
-      return;
-    }
+    if (submitting || !validateForm()) return;
 
     setSubmitting(true);
     setError("");
@@ -446,14 +456,22 @@ export default function Checkout() {
       const fullName =
         `${customer.firstName.trim()} ${customer.lastName.trim()}`.trim();
 
+      const orderAddress = {
+        country: address.country,
+        governorate,
+        city: address.city.trim(),
+        streetName: address.streetName.trim(),
+        apartmentNumber: address.apartmentNumber.trim() || null,
+        postalCode: address.postalCode.trim() || null,
+      };
+
       const result = await placeOrder({
         customer: {
           fullName,
           email: customer.email.trim(),
           phone: customer.phone.trim(),
         },
-
-        address,
+        address: orderAddress,
         cartItems,
         deliveryFee,
       });
@@ -467,7 +485,6 @@ export default function Checkout() {
       );
 
       clearCart();
-
       navigate(`/order-success/${result.order_number}`);
     } catch (checkoutError) {
       console.error(checkoutError);
@@ -480,130 +497,93 @@ export default function Checkout() {
 
   if (!cartItems.length) {
     return (
-      <section className="flex min-h-[70vh] flex-col items-center justify-center px-5 text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#666]">
-          Checkout
-        </p>
+      <div className="min-h-[70vh] bg-white font-['Montserrat',Arial,sans-serif]">
+        <CheckoutNavbar />
 
-        <h1 className="mt-4 text-4xl font-bold">Your cart is empty</h1>
+        <section className="flex min-h-[70vh] flex-col items-center justify-center px-5 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-neutral-500">
+            Checkout
+          </p>
 
-        <p className="mt-4 max-w-md leading-7 text-[#666]">
-          Add a product or create a custom TeeLab design before checking out.
-        </p>
+          <h1 className="mt-4 text-3xl font-bold text-black">
+            Your cart is empty
+          </h1>
 
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link
-            to="/products"
-            className="rounded-xl bg-black px-7 py-4 font-semibold text-white transition hover:bg-[#222]"
-          >
-            Shop Products
-          </Link>
+          <p className="mt-4 max-w-md text-sm leading-7 text-neutral-500">
+            Add a product or create a custom TeeLab design before checking out.
+          </p>
 
-          <Link
-            to="/customizer"
-            className="rounded-xl border border-black px-7 py-4 font-semibold transition hover:bg-black hover:text-white"
-          >
-            Create a Design
-          </Link>
-        </div>
-      </section>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link
+              to="/products"
+              className="rounded-xl bg-black px-7 py-4 text-sm font-semibold text-white"
+            >
+              Shop Products
+            </Link>
+
+            <Link
+              to="/customizer"
+              className="rounded-xl border border-black px-7 py-4 text-sm font-semibold text-black"
+            >
+              Create a Design
+            </Link>
+          </div>
+        </section>
+      </div>
     );
   }
 
   return (
-    <section className="min-h-screen bg-white font-['Montserrat',Arial,sans-serif]">
+    <div className="min-h-screen bg-white font-['Montserrat',Arial,sans-serif]">
+      <CheckoutNavbar />
+
       <form
         onSubmit={submit}
         noValidate
-        className="mx-auto grid min-h-screen max-w-[1600px] lg:grid-cols-[65%_35%]"
+        className="mx-auto grid min-h-screen w-full max-w-[1600px] grid-cols-1 lg:grid-cols-[65%_35%]"
       >
-        {/* Mobile summary */}
-        <div className="border-b border-[#E6E6E6] bg-[#F7F7F7] lg:hidden">
+        <div className="border-b border-neutral-200 bg-neutral-50 lg:hidden">
           <button
             type="button"
             onClick={() => setSummaryOpen((current) => !current)}
-            className="flex w-full items-center justify-between gap-4 px-5 py-5"
+            aria-expanded={summaryOpen}
+            className="flex w-full items-center justify-between gap-4 px-5 py-4"
           >
-            <span className="flex items-center gap-2 text-sm font-semibold">
+            <span className="flex items-center gap-2 text-[13px] font-semibold">
               Order summary
               <ChevronIcon open={summaryOpen} />
             </span>
 
-            <span className="font-bold">{formatMoney(total)}</span>
+            <span className="text-sm font-bold">{formatMoney(total)}</span>
           </button>
 
-          <AnimatePresence initial={false}>
-            {summaryOpen && (
-              <motion.div
-                initial={{
-                  height: 0,
-                  opacity: 0,
-                }}
-                animate={{
-                  height: "auto",
-                  opacity: 1,
-                }}
-                exit={{
-                  height: 0,
-                  opacity: 0,
-                }}
-                transition={{
-                  duration: 0.25,
-                }}
-                className="overflow-hidden"
-              >
-                <div className="border-t border-[#E6E6E6] px-5 py-6">
-                  <OrderSummary
-                    cartItems={cartItems}
-                    subtotal={subtotal}
-                    deliveryFee={deliveryFee}
-                    total={total}
-                    discountCode={discountCode}
-                    setDiscountCode={setDiscountCode}
-                    discountMessage={discountMessage}
-                    onApplyDiscount={applyDiscount}
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {summaryOpen && (
+            <div className="border-t border-neutral-200 px-5 py-6">
+              <OrderSummary
+                cartItems={cartItems}
+                subtotal={subtotal}
+                deliveryFee={deliveryFee}
+                total={total}
+                discountCode={discountCode}
+                setDiscountCode={setDiscountCode}
+                discountMessage={discountMessage}
+                onApplyDiscount={applyDiscount}
+              />
+            </div>
+          )}
         </div>
 
-        {/* Checkout form */}
-        <main className="bg-white px-5 py-10 sm:px-8 lg:px-12 lg:py-14 xl:px-20">
+        <main className="bg-white px-5 py-8 sm:px-8 lg:px-12 lg:py-12 xl:px-20">
           <div className="mx-auto max-w-[760px]">
-            <div className="mb-12 flex items-center justify-between">
-              <Link to="/" className="text-3xl font-bold tracking-tight">
-                TeeLab
-              </Link>
-
-              <Link
-                to="/cart"
-                className="text-sm font-medium underline underline-offset-4"
-              >
-                Return to cart
-              </Link>
-            </div>
-
-            <motion.section
-              initial={{
-                opacity: 0,
-                y: 16,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                duration: 0.35,
-              }}
-            >
+            <section>
               <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">Contact</h1>
+                <h1 className="text-[19px] font-semibold text-black">
+                  Contact
+                </h1>
 
                 <Link
                   to="/admin/login"
-                  className="text-sm underline underline-offset-4"
+                  className="text-[13px] text-black underline underline-offset-4"
                 >
                   Sign in
                 </Link>
@@ -628,41 +608,29 @@ export default function Checkout() {
                     onChange={(event) =>
                       setEmailMarketing(event.target.checked)
                     }
-                    className="mt-0.5 h-5 w-5 rounded border-[#DADADA] accent-black"
+                    className="mt-0.5 h-4 w-4 rounded border-neutral-300 accent-black"
                   />
 
-                  <span className="text-sm">Email me with news and offers</span>
+                  <span className="text-[13px] text-black">
+                    Email me with news and offers
+                  </span>
                 </label>
               </div>
-            </motion.section>
+            </section>
 
-            <motion.section
-              initial={{
-                opacity: 0,
-                y: 16,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.05,
-                duration: 0.35,
-              }}
-              className="mt-11"
-            >
-              <h2 className="text-2xl font-bold">Delivery</h2>
+            <section className="mt-10">
+              <h2 className="text-[19px] font-semibold text-black">Delivery</h2>
 
               <div className="mt-5 grid gap-3">
                 <label className="relative block">
-                  <span className="pointer-events-none absolute left-[18px] top-2 text-[11px] text-[#666]">
+                  <span className="pointer-events-none absolute left-4 top-1.5 text-[11px] text-neutral-600">
                     Country / Region
                   </span>
 
                   <select
                     value={address.country}
                     onChange={changeAddress("country")}
-                    className="h-14 w-full appearance-none rounded-xl border border-[#DADADA] bg-white px-[18px] pb-1 pt-5 outline-none transition duration-200 focus:border-black focus:shadow-[0_0_0_3px_rgba(0,0,0,0.06)]"
+                    className="h-[58px] w-full appearance-none rounded-2xl border border-neutral-300 bg-white px-4 pb-1 pt-4 text-[13.5px] text-black outline-none transition focus:border-black focus:ring-1 focus:ring-black"
                   >
                     <option value="Egypt">Egypt</option>
                   </select>
@@ -672,7 +640,7 @@ export default function Checkout() {
                   </span>
                 </label>
 
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <FloatingField
                     label="First name"
                     name="firstName"
@@ -705,14 +673,15 @@ export default function Checkout() {
                 />
 
                 <FloatingField
-                  label="Apartment, suite, building number, etc."
-                  name="buildingNumber"
-                  value={address.buildingNumber}
-                  onChange={changeAddress("buildingNumber")}
+                  label="Apartment, suite, etc."
+                  name="apartmentNumber"
+                  value={address.apartmentNumber}
+                  onChange={changeAddress("apartmentNumber")}
+                  placeholder="Apartment, suite, etc. (optional)"
                   autoComplete="address-line2"
                 />
 
-                <div className="grid gap-3 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                   <FloatingField
                     label="City"
                     name="city"
@@ -727,18 +696,17 @@ export default function Checkout() {
                     <span className="sr-only">Governorate</span>
 
                     <select
-                      value={address.governorate}
-                      onChange={changeAddress("governorate")}
+                      name="governorate"
+                      value={governorate}
+                      onChange={changeGovernorate}
                       aria-invalid={Boolean(errors.governorate)}
                       className={`${fieldClass(
                         Boolean(errors.governorate),
                       )} appearance-none`}
                     >
-                      <option value="">Governorate</option>
-
-                      {governorates.map((governorate) => (
-                        <option key={governorate} value={governorate}>
-                          {governorate}
+                      {egyptGovernorates.map((item) => (
+                        <option key={item} value={item}>
+                          {item}
                         </option>
                       ))}
                     </select>
@@ -766,47 +734,6 @@ export default function Checkout() {
                   autoComplete="tel"
                 />
 
-                <FloatingField
-                  label="Area"
-                  name="area"
-                  value={address.area}
-                  onChange={changeAddress("area")}
-                />
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <FloatingField
-                    label="Floor number"
-                    name="floorNumber"
-                    value={address.floorNumber}
-                    onChange={changeAddress("floorNumber")}
-                  />
-
-                  <FloatingField
-                    label="Apartment number"
-                    name="apartmentNumber"
-                    value={address.apartmentNumber}
-                    onChange={changeAddress("apartmentNumber")}
-                  />
-                </div>
-
-                <FloatingField
-                  label="Nearby landmark"
-                  name="landmark"
-                  value={address.landmark}
-                  onChange={changeAddress("landmark")}
-                />
-
-                <label>
-                  <span className="sr-only">Delivery notes</span>
-
-                  <textarea
-                    value={address.deliveryNotes}
-                    onChange={changeAddress("deliveryNotes")}
-                    placeholder="Delivery notes (optional)"
-                    className={textareaClass()}
-                  />
-                </label>
-
                 <label className="mt-1 flex cursor-pointer items-start gap-3">
                   <input
                     type="checkbox"
@@ -814,143 +741,75 @@ export default function Checkout() {
                     onChange={(event) =>
                       setSaveInformation(event.target.checked)
                     }
-                    className="mt-0.5 h-5 w-5 rounded border-[#DADADA] accent-black"
+                    className="mt-0.5 h-4 w-4 rounded border-neutral-300 accent-black"
                   />
 
-                  <span className="text-sm">
+                  <span className="text-[13px] text-black">
                     Save this information for next time
                   </span>
                 </label>
               </div>
-            </motion.section>
+            </section>
 
-            <motion.section
-              initial={{
-                opacity: 0,
-                y: 16,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.1,
-                duration: 0.35,
-              }}
-              className="mt-11"
-            >
-              <h2 className="text-2xl font-bold">Exact location</h2>
+            <section className="mt-10">
+              <h2 className="text-[19px] font-semibold text-black">
+                Shipping method
+              </h2>
 
-              <p className="mt-2 text-sm leading-6 text-[#666]">
-                Optional when your written address is complete.
-              </p>
-
-              <div className="mt-5 overflow-hidden rounded-xl">
-                <LocationPicker
-                  location={address}
-                  onChange={(location) =>
-                    setAddress((current) => ({
-                      ...current,
-                      ...location,
-                    }))
-                  }
-                />
-              </div>
-            </motion.section>
-
-            <motion.section
-              initial={{
-                opacity: 0,
-                y: 16,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.15,
-                duration: 0.35,
-              }}
-              className="mt-11"
-            >
-              <h2 className="text-2xl font-bold">Shipping method</h2>
-
-              <div className="mt-5 flex min-h-14 items-center justify-between gap-5 rounded-xl border border-black px-[18px]">
+              <div className="mt-5 flex min-h-[52px] items-center justify-between gap-5 rounded-xl border border-black px-[15px]">
                 <div>
-                  <p className="font-semibold">Standard</p>
-
-                  <p className="mt-1 text-xs text-[#666]">Standard delivery</p>
+                  <p className="text-[13px] font-semibold text-black">
+                    Standard
+                  </p>
+                  <p className="mt-1 text-xs text-neutral-500">
+                    Standard delivery
+                  </p>
                 </div>
 
-                <p className="font-semibold">
+                <p className="text-[13px] font-semibold text-black">
                   {deliveryFee ? formatMoney(deliveryFee) : "Free"}
                 </p>
               </div>
-            </motion.section>
+            </section>
 
-            <motion.section
-              initial={{
-                opacity: 0,
-                y: 16,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.2,
-                duration: 0.35,
-              }}
-              className="mt-11"
-            >
-              <h2 className="text-2xl font-bold">Payment</h2>
+            <section className="mt-10">
+              <h2 className="text-[19px] font-semibold text-black">Payment</h2>
 
-              <p className="mt-1 text-sm text-[#666]">
+              <p className="mt-1 text-[13px] text-neutral-500">
                 Your order information is handled securely.
               </p>
 
               <div className="mt-5 overflow-hidden rounded-xl border border-black">
-                <label className="flex cursor-pointer items-start gap-3 bg-[#F7F7F7] px-[18px] py-5">
+                <label className="flex cursor-pointer items-start gap-3 bg-neutral-50 px-[15px] py-4">
                   <input
                     type="radio"
                     checked
                     readOnly
-                    className="mt-0.5 h-5 w-5 accent-black"
+                    className="mt-0.5 h-4 w-4 accent-black"
                   />
 
                   <div>
-                    <p className="font-semibold">Cash on Delivery (COD)</p>
-
-                    <p className="mt-1 text-sm text-[#666]">
+                    <p className="text-[13px] font-semibold text-black">
+                      Cash on Delivery (COD)
+                    </p>
+                    <p className="mt-1 text-[13px] text-neutral-500">
                       Pay when your order arrives.
                     </p>
                   </div>
                 </label>
               </div>
-            </motion.section>
+            </section>
 
-            <motion.section
-              initial={{
-                opacity: 0,
-                y: 16,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.25,
-                duration: 0.35,
-              }}
-              className="mt-11"
-            >
-              <h2 className="text-2xl font-bold">Billing address</h2>
+            <section className="mt-10">
+              <h2 className="text-[19px] font-semibold text-black">
+                Billing address
+              </h2>
 
-              <div className="mt-5 overflow-hidden rounded-xl border border-[#DADADA]">
+              <div className="mt-5 overflow-hidden rounded-xl border border-neutral-300">
                 <label
-                  className={`flex cursor-pointer items-center gap-3 px-[18px] py-5 ${
+                  className={`flex cursor-pointer items-center gap-3 px-[15px] py-4 ${
                     !useDifferentBilling
-                      ? "border border-black bg-[#F7F7F7]"
+                      ? "border border-black bg-neutral-50"
                       : ""
                   }`}
                 >
@@ -959,18 +818,18 @@ export default function Checkout() {
                     name="billing"
                     checked={!useDifferentBilling}
                     onChange={() => setUseDifferentBilling(false)}
-                    className="h-5 w-5 accent-black"
+                    className="h-4 w-4 accent-black"
                   />
 
-                  <span className="text-sm font-medium">
+                  <span className="text-[13px] font-medium text-black">
                     Same as shipping address
                   </span>
                 </label>
 
                 <label
-                  className={`flex cursor-pointer items-center gap-3 border-t border-[#E6E6E6] px-[18px] py-5 ${
+                  className={`flex cursor-pointer items-center gap-3 border-t border-neutral-200 px-[15px] py-4 ${
                     useDifferentBilling
-                      ? "border border-black bg-[#F7F7F7]"
+                      ? "border border-black bg-neutral-50"
                       : ""
                   }`}
                 >
@@ -979,186 +838,137 @@ export default function Checkout() {
                     name="billing"
                     checked={useDifferentBilling}
                     onChange={() => setUseDifferentBilling(true)}
-                    className="h-5 w-5 accent-black"
+                    className="h-4 w-4 accent-black"
                   />
 
-                  <span className="text-sm font-medium">
+                  <span className="text-[13px] font-medium text-black">
                     Use a different billing address
                   </span>
                 </label>
 
-                <AnimatePresence initial={false}>
-                  {useDifferentBilling && (
-                    <motion.div
-                      initial={{
-                        height: 0,
-                        opacity: 0,
-                      }}
-                      animate={{
-                        height: "auto",
-                        opacity: 1,
-                      }}
-                      exit={{
-                        height: 0,
-                        opacity: 0,
-                      }}
-                      transition={{
-                        duration: 0.25,
-                      }}
-                      className="overflow-hidden"
-                    >
-                      <div className="grid gap-3 border-t border-[#E6E6E6] bg-[#F7F7F7] p-4">
-                        <label className="relative block">
-                          <span className="pointer-events-none absolute left-[18px] top-2 text-[11px] text-[#666]">
-                            Country / Region
-                          </span>
+                {useDifferentBilling && (
+                  <div className="grid gap-3 border-t border-neutral-200 bg-neutral-50 p-4">
+                    <label className="relative block">
+                      <span className="pointer-events-none absolute left-4 top-1.5 text-[11px] text-neutral-600">
+                        Country / Region
+                      </span>
 
-                          <select
-                            value={billingAddress.country}
-                            onChange={changeBilling("country")}
-                            className="h-14 w-full appearance-none rounded-xl border border-[#DADADA] bg-white px-[18px] pb-1 pt-5 outline-none focus:border-black"
-                          >
-                            <option value="Egypt">Egypt</option>
-                          </select>
-                        </label>
+                      <select
+                        value={billingAddress.country}
+                        onChange={changeBilling("country")}
+                        className="h-[58px] w-full appearance-none rounded-2xl border border-neutral-300 bg-white px-4 pb-1 pt-4 text-[13.5px] text-black outline-none focus:border-black focus:ring-1 focus:ring-black"
+                      >
+                        <option value="Egypt">Egypt</option>
+                      </select>
+                    </label>
 
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          <FloatingField
-                            label="First name"
-                            value={billingAddress.firstName}
-                            onChange={changeBilling("firstName")}
-                            error={errors.billing_firstName}
-                            required
-                          />
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <FloatingField
+                        label="First name"
+                        value={billingAddress.firstName}
+                        onChange={changeBilling("firstName")}
+                        error={errors.billing_firstName}
+                        required
+                      />
 
-                          <FloatingField
-                            label="Last name"
-                            value={billingAddress.lastName}
-                            onChange={changeBilling("lastName")}
-                            error={errors.billing_lastName}
-                            required
-                          />
-                        </div>
+                      <FloatingField
+                        label="Last name"
+                        value={billingAddress.lastName}
+                        onChange={changeBilling("lastName")}
+                        error={errors.billing_lastName}
+                        required
+                      />
+                    </div>
 
-                        <FloatingField
-                          label="Address"
-                          value={billingAddress.address}
-                          onChange={changeBilling("address")}
-                          error={errors.billing_address}
-                          required
-                        />
+                    <FloatingField
+                      label="Address"
+                      value={billingAddress.address}
+                      onChange={changeBilling("address")}
+                      error={errors.billing_address}
+                      required
+                    />
 
-                        <FloatingField
-                          label="Apartment, suite, etc."
-                          value={billingAddress.apartment}
-                          onChange={changeBilling("apartment")}
-                        />
+                    <FloatingField
+                      label="Apartment, suite, etc."
+                      value={billingAddress.apartment}
+                      onChange={changeBilling("apartment")}
+                      placeholder="Apartment, suite, etc. (optional)"
+                    />
 
-                        <div className="grid gap-3 sm:grid-cols-3">
-                          <FloatingField
-                            label="City"
-                            value={billingAddress.city}
-                            onChange={changeBilling("city")}
-                            error={errors.billing_city}
-                            required
-                          />
+                    <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                      <FloatingField
+                        label="City"
+                        value={billingAddress.city}
+                        onChange={changeBilling("city")}
+                        error={errors.billing_city}
+                        required
+                      />
 
-                          <label>
-                            <select
-                              value={billingAddress.governorate}
-                              onChange={changeBilling("governorate")}
-                              className={`${fieldClass(
-                                Boolean(errors.billing_governorate),
-                              )} appearance-none`}
-                            >
-                              <option value="">Governorate</option>
+                      <label className="block">
+                        <span className="sr-only">Governorate</span>
 
-                              {governorates.map((governorate) => (
-                                <option key={governorate} value={governorate}>
-                                  {governorate}
-                                </option>
-                              ))}
-                            </select>
+                        <select
+                          value={billingAddress.governorate}
+                          onChange={changeBilling("governorate")}
+                          className={`${fieldClass(
+                            Boolean(errors.billing_governorate),
+                          )} appearance-none`}
+                        >
+                          {egyptGovernorates.map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </select>
 
-                            <ErrorMessage>
-                              {errors.billing_governorate}
-                            </ErrorMessage>
-                          </label>
+                        <ErrorMessage>
+                          {errors.billing_governorate}
+                        </ErrorMessage>
+                      </label>
 
-                          <FloatingField
-                            label="Postal code"
-                            value={billingAddress.postalCode}
-                            onChange={changeBilling("postalCode")}
-                          />
-                        </div>
+                      <FloatingField
+                        label="Postal code"
+                        value={billingAddress.postalCode}
+                        onChange={changeBilling("postalCode")}
+                      />
+                    </div>
 
-                        <FloatingField
-                          label="Phone"
-                          value={billingAddress.phone}
-                          onChange={changeBilling("phone")}
-                          inputMode="tel"
-                        />
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    <FloatingField
+                      label="Phone"
+                      value={billingAddress.phone}
+                      onChange={changeBilling("phone")}
+                      inputMode="tel"
+                    />
+                  </div>
+                )}
               </div>
-            </motion.section>
-
-            <div className="mt-10">
-              <label className="flex cursor-pointer items-start gap-3">
-                <input
-                  type="checkbox"
-                  checked={confirmed}
-                  onChange={(event) => {
-                    setConfirmed(event.target.checked);
-
-                    setErrors((current) => ({
-                      ...current,
-                      confirmed: "",
-                    }));
-                  }}
-                  className="mt-0.5 h-5 w-5 rounded border-[#DADADA] accent-black"
-                />
-
-                <span className="text-sm leading-6">
-                  I confirm that the design, size, color and delivery
-                  information are correct.
-                </span>
-              </label>
-
-              <ErrorMessage>{errors.confirmed}</ErrorMessage>
-            </div>
+            </section>
 
             {error && (
               <div
                 role="alert"
-                className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+                className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-[13px] text-red-700"
               >
                 {error}
               </div>
             )}
 
-            <motion.button
+            <button
               type="submit"
               disabled={!valid}
-              whileTap={{
-                scale: 0.99,
-              }}
-              className="mt-8 flex h-[58px] w-full items-center justify-center rounded-xl bg-black px-6 font-semibold text-white transition duration-300 hover:bg-[#222] disabled:cursor-not-allowed disabled:bg-neutral-300"
+              className="mt-8 flex h-[56px] w-full items-center justify-center rounded-xl bg-black px-6 text-sm font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300"
             >
               {submitting ? "Completing order..." : "Complete Order"}
-            </motion.button>
+            </button>
 
-            <p className="mt-8 border-t border-[#E6E6E6] pt-6 text-center text-xs text-[#666]">
+            <p className="mt-8 border-t border-neutral-200 pt-6 text-center text-xs text-neutral-500">
               © 2026 TeeLab. All rights reserved.
             </p>
           </div>
         </main>
 
-        {/* Desktop sticky summary */}
-        <aside className="hidden bg-[#F7F7F7] lg:block">
-          <div className="sticky top-0 min-h-screen border-l border-[#E6E6E6] px-8 py-14 xl:px-12">
+        <aside className="hidden border-l border-neutral-200 bg-neutral-50 lg:block">
+          <div className="sticky top-0 min-h-screen px-8 py-12 xl:px-12">
             <div className="mx-auto max-w-[520px]">
               <OrderSummary
                 cartItems={cartItems}
@@ -1174,6 +984,6 @@ export default function Checkout() {
           </div>
         </aside>
       </form>
-    </section>
+    </div>
   );
 }

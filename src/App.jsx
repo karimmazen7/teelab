@@ -33,6 +33,13 @@ function App() {
       <ScrollToTop />
 
       <Routes>
+        {/*
+          Checkout uses its own dedicated navbar.
+          It is outside StoreLayout to prevent the global navbar,
+          announcement bar, and footer from appearing.
+        */}
+        <Route path="/checkout" element={<Checkout />} />
+
         {/* Public store pages */}
         <Route element={<StoreLayout />}>
           <Route path="/" element={<Home />} />
@@ -44,8 +51,6 @@ function App() {
           <Route path="/customizer" element={<Customizer />} />
 
           <Route path="/cart" element={<Cart />} />
-
-          <Route path="/checkout" element={<Checkout />} />
 
           <Route path="/faqs" element={<Faq />} />
 
