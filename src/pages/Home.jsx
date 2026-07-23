@@ -7,7 +7,10 @@ import { products } from "../data/products";
 const availableSizes = ["S", "M", "L", "XL"];
 
 const formatMoney = (value) =>
-  `${Number(value || 0).toLocaleString("en-EG")} EGP`;
+  `${Number(value || 0).toLocaleString("en-EG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })} EGP`;
 
 function PlusIcon() {
   return (

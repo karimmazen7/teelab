@@ -74,7 +74,10 @@ const fieldClass = (hasError = false) =>
   ].join(" ");
 
 const formatMoney = (value) =>
-  `EGP ${Number(value || 0).toLocaleString("en-EG")}`;
+  `EGP ${Number(value || 0).toLocaleString("en-EG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
 
 function ShoppingBagIcon() {
   return (
@@ -283,7 +286,10 @@ function OrderSummary({
             <div className="text-right">
               <span className="mr-2 text-xs text-neutral-500">EGP</span>
               <span className="text-[22px] font-bold text-black">
-                {Number(total || 0).toLocaleString("en-EG")}
+                {Number(total || 0).toLocaleString("en-EG", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </span>
             </div>
           </div>

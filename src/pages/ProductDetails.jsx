@@ -207,7 +207,7 @@ function ProductDetails() {
   };
 
   return (
-    <main className="animate-[fadeIn_0.45s_ease-out] bg-white pb-24 text-[#111] lg:pb-0">
+    <main className="animate-[fadeIn_0.45s_ease-out] bg-white text-[#111]">
       {/* Main product area */}
       <section className="mx-auto grid max-w-[1700px] grid-cols-1 gap-8 px-4 py-6 sm:px-6 md:py-10 lg:grid-cols-[90px_minmax(0,1.35fr)_minmax(390px,0.85fr)] lg:gap-8 lg:px-8 xl:grid-cols-[110px_minmax(0,1.45fr)_minmax(430px,0.85fr)] xl:gap-12">
         {/* Thumbnail gallery */}
@@ -318,12 +318,12 @@ function ProductDetails() {
             TeeLab Essentials
           </p>
 
-          <h1 className="mt-4 text-2xl font-medium uppercase leading-tight tracking-[0.2em] sm:text-3xl">
+          <h1 className="mt-4 text-[20px] font-medium uppercase leading-tight tracking-[0.16em] text-black md:text-[24px]">
             {product.name}
           </h1>
 
-          <p className="mt-5 text-lg tracking-[0.16em] text-[#666]">
-            {product.price.toLocaleString()} EGP
+          <p className="mt-4 text-[15px] font-normal tracking-[0.12em] text-neutral-600 md:text-[17px]">
+            {Number(product.price).toFixed(2)} EGP
           </p>
 
           <div className="my-8 h-px bg-[#E5E5E5]" />
@@ -331,12 +331,12 @@ function ProductDetails() {
           {/* Size selection */}
           <div>
             <div className="flex items-center justify-between">
-              <p className="text-sm">Size</p>
+              <p className="text-[13px] font-normal text-neutral-800">Size</p>
 
               <button
                 type="button"
                 onClick={() => setSizeModalOpen(true)}
-                className="border-b border-[#111] pb-0.5 text-xs transition-opacity duration-300 hover:opacity-50"
+                className="border-b border-[#111] pb-0.5 text-[13px] font-normal text-neutral-800 transition-opacity duration-300 hover:opacity-50"
               >
                 Size Chart
               </button>
@@ -348,7 +348,7 @@ function ProductDetails() {
                   key={size}
                   type="button"
                   onClick={() => setSelectedSize(size)}
-                  className={`flex h-12 min-w-12 items-center justify-center border px-3 text-xs uppercase transition-all duration-300 active:scale-95 ${
+                  className={`flex h-[44px] min-w-[44px] items-center justify-center border px-3 text-[13px] uppercase transition-all duration-300 active:scale-95 ${
                     selectedSize === size
                       ? "border-[#111] bg-white text-[#111]"
                       : "border-[#E5E5E5] hover:bg-[#F4F4F4]"
@@ -363,7 +363,7 @@ function ProductDetails() {
 
           {/* Color selection */}
           <div className="mt-8">
-            <p className="text-sm">
+            <p className="text-[13px] font-normal text-neutral-800">
               Color: <span className="text-[#666]">{selectedColor}</span>
             </p>
 
@@ -398,23 +398,23 @@ function ProductDetails() {
           </div>
 
           {/* Quantity */}
-          <div className="mt-8 flex h-14 w-40 items-center border border-[#E5E5E5]">
+          <div className="mt-8 flex h-[46px] w-[125px] items-center border border-[#E5E5E5] text-[13px]">
             <button
               type="button"
               onClick={() => setQuantity((current) => Math.max(1, current - 1))}
               disabled={quantity === 1}
-              className="h-12 w-12 text-xl text-[#666] transition-colors duration-300 hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex h-full w-10 items-center justify-center text-[14px] text-[#666] transition-colors duration-300 hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
               aria-label="Decrease quantity"
             >
               −
             </button>
 
-            <span className="flex-1 text-center text-sm">{quantity}</span>
+            <span className="flex-1 text-center text-[13px]">{quantity}</span>
 
             <button
               type="button"
               onClick={() => setQuantity((current) => current + 1)}
-              className="h-12 w-12 text-xl text-[#666] transition-colors duration-300 hover:text-black"
+              className="flex h-full w-10 items-center justify-center text-[14px] text-[#666] transition-colors duration-300 hover:text-black"
               aria-label="Increase quantity"
             >
               +
@@ -422,24 +422,26 @@ function ProductDetails() {
           </div>
 
           {/* Buttons */}
-          <button
-            type="button"
-            onClick={addSelectedProduct}
-            className="mt-10 h-16 w-full border border-black bg-black px-6 text-xs font-medium uppercase tracking-[0.2em] text-white transition-all duration-300 hover:bg-white hover:text-black active:scale-[0.985]"
-          >
-            {added ? "Added to Cart" : "Add to Cart"}
-          </button>
+          <div className="mt-6 space-y-2.5">
+            <button
+              type="button"
+              onClick={addSelectedProduct}
+              className="flex h-[50px] w-full items-center justify-center bg-black px-5 text-[13px] font-medium uppercase tracking-[0.2em] text-white transition hover:bg-neutral-800 active:scale-[0.985] md:h-[54px] md:text-[14px]"
+            >
+              {added ? "Added to Cart" : "Add to Cart"}
+            </button>
 
-          <button
-            type="button"
-            onClick={handleBuyNow}
-            className="mt-3 h-16 w-full border border-black bg-white px-6 text-xs font-medium uppercase tracking-[0.2em] text-black transition-all duration-300 hover:bg-black hover:text-white active:scale-[0.985]"
-          >
-            Buy It Now
-          </button>
+            <button
+              type="button"
+              onClick={handleBuyNow}
+              className="flex h-[50px] w-full items-center justify-center border border-black bg-white px-5 text-[13px] font-medium uppercase tracking-[0.2em] text-black transition hover:bg-black hover:text-white active:scale-[0.985] md:h-[54px] md:text-[14px]"
+            >
+              Buy It Now
+            </button>
+          </div>
 
           {/* Product features */}
-          <ul className="mt-9 space-y-2.5 text-sm leading-6 text-[#666]">
+          <ul className="mt-7 space-y-2 text-[12px] leading-6 text-neutral-600 md:text-[13px]">
             {productFeatures.map((feature) => (
               <li key={feature} className="flex gap-3">
                 <span aria-hidden="true">•</span>
@@ -451,7 +453,7 @@ function ProductDetails() {
       </section>
 
       {/* Accordions */}
-      <section className="mx-auto max-w-[1700px] px-4 py-14 sm:px-6 lg:px-8 lg:py-24">
+      {/* <section className="mx-auto max-w-[1700px] px-4 py-14 sm:px-6 lg:px-8 lg:py-24">
         <div className="border-t border-[#E5E5E5]">
           {accordionItems.map((item, index) => {
             const isOpen = openAccordion === index;
@@ -494,7 +496,7 @@ function ProductDetails() {
             );
           })}
         </div>
-      </section>
+      </section> */}
 
       {/* Related products */}
       {relatedProducts.length > 0 && (
@@ -541,7 +543,7 @@ function ProductDetails() {
                   </h3>
 
                   <p className="mt-2 text-xs tracking-[0.1em] text-[#666]">
-                    {relatedProduct.price.toLocaleString()} EGP
+                    {Number(relatedProduct.price).toFixed(2)} EGP
                   </p>
                 </Link>
               </article>
@@ -621,27 +623,6 @@ function ProductDetails() {
           </div>
         </div>
       )}
-
-      {/* Mobile sticky add to cart */}
-      <div className="fixed inset-x-0 bottom-0 z-50 flex items-center gap-4 border-t border-[#E5E5E5] bg-white p-3 lg:hidden">
-        <div className="shrink-0">
-          <p className="text-[10px] uppercase tracking-[0.12em] text-[#666]">
-            Price
-          </p>
-
-          <p className="mt-1 text-sm font-medium">
-            {product.price.toLocaleString()} EGP
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={addSelectedProduct}
-          className="h-14 flex-1 bg-black px-5 text-xs font-medium uppercase tracking-[0.18em] text-white transition-colors duration-300 hover:bg-[#222]"
-        >
-          {added ? "Added" : "Add to Cart"}
-        </button>
-      </div>
     </main>
   );
 }

@@ -418,7 +418,7 @@ function Navbar() {
                                 </div>
 
                                 <p className="shrink-0 text-sm font-semibold">
-                                  {itemTotal.toLocaleString("en-EG")} EGP
+                                  {Number(itemTotal).toFixed(2)} EGP
                                 </p>
                               </div>
 
@@ -481,7 +481,7 @@ function Navbar() {
                       </span>
 
                       <span className="font-semibold">
-                        {Number(subtotal).toLocaleString("en-EG")} EGP
+                        {Number(subtotal).toFixed(2)} EGP
                       </span>
                     </div>
 
