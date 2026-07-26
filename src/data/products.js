@@ -12,7 +12,7 @@ export const products = [
       "/images/blacktee.png",
     ],
     colors: ["Black"],
-    sizes: ["S", "M", "L", "XL"],
+    sizes: ["M", "L", "XL"],
   },
   {
     id: "essential-white",
@@ -23,7 +23,7 @@ export const products = [
     image: "/images/classic-tee.png",
     images: ["/images/classic-tee.png", "/images/whitetee.png"],
     colors: ["White"],
-    sizes: ["S", "M", "L", "XL"],
+    sizes: [ "M", "L", "XL"],
   },
   // {
   //   id: "custom-edition",
@@ -50,7 +50,7 @@ export const products = [
       "/images/OliveTee2.png",
     ],
     colors: ["Grey"],
-    sizes: ["S", "M", "L", "XL"],
+    sizes: ["M", "L", "XL"],
   },
   {
     id: "black-sweatpants",
@@ -65,7 +65,7 @@ export const products = [
       "/images/OliveTee3.png",
     ],
     colors: ["Black"],
-    sizes: ["S", "M", "L", "XL"],
+    sizes: [ "M", "L", "XL"],
   },
   {
     id: "mocha-polo",
@@ -80,7 +80,7 @@ export const products = [
       "/images/MochaPolo3.png",
     ],
     colors: ["Brown"],
-    sizes: ["S", "M", "L", "XL"],
+    sizes: [ "M", "L", "XL"],
   },
   {
     id: "noir-polo",
@@ -91,7 +91,7 @@ export const products = [
     image: "/images/NoirPolo1.png",
     images: ["/images/NoirPolo1.png", "/images/NoirPolo2.png"],
     colors: ["Black"],
-    sizes: ["S", "M", "L", "XL"],
+    sizes: [ "M", "L", "XL"],
   },
   {
     id: "basic-olive-tee",
@@ -106,6 +106,6 @@ export const products = [
       "/images/OliveTee3.png",
     ],
     colors: ["Olive"],
-    sizes: ["S", "M", "L", "XL"],
+    sizes: [ "M", "L", "XL"],
   },
 ];
