@@ -126,13 +126,6 @@ function OrderSuccess() {
   const address = order?.address || {};
   const items = Array.isArray(order?.items) ? order.items : [];
 
-  const whatsappNumber =
-    import.meta.env.VITE_WHATSAPP_SUPPORT_NUMBER || "201000000000";
-
-  const whatsappMessage = encodeURIComponent(
-    `Hello TeeLab, I placed order ${orderNumber}.`,
-  );
-
   return (
     <section className="mx-auto min-h-screen max-w-5xl px-5 py-14 lg:px-8">
       <div className="border border-neutral-200 bg-white p-7 sm:p-10">
@@ -156,29 +149,7 @@ function OrderSuccess() {
           </p>
         </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          <div className="border border-neutral-200 p-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-neutral-500">
-              Order number
-            </p>
-
-            <p className="mt-2 break-all text-xl font-black">
-              {order?.order_number || orderNumber}
-            </p>
-          </div>
-
-          <div className="border border-neutral-200 p-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-neutral-500">
-              Status
-            </p>
-
-            <p className="mt-2 text-xl font-black capitalize">
-              {(order?.status || "new").replaceAll("_", " ")}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-8 grid gap-8 lg:grid-cols-2">
+        <div className="mt-10 grid gap-8 lg:grid-cols-2">
           <section className="border border-neutral-200 p-6">
             <h2 className="text-xl font-bold">Customer information</h2>
 
@@ -300,19 +271,10 @@ function OrderSuccess() {
 
           <Link
             to="/products"
-            className="bg-black px-7 py-4 font-semibold text-white"
+            className="bg-black px-7 py-4 font-semibold text-white transition hover:bg-neutral-800"
           >
             Continue Shopping
           </Link>
-
-          <a
-            href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
-            target="_blank"
-            rel="noreferrer"
-            className="border border-black px-7 py-4 font-semibold"
-          >
-            Contact on WhatsApp
-          </a>
         </div>
       </div>
     </section>

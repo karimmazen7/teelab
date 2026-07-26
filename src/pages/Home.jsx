@@ -193,9 +193,9 @@ function Home() {
                 New Arrivals
               </p>
 
-              <h2 className="mt-4 text-3xl font-semibold uppercase tracking-[0.08em] sm:text-4xl">
+              {/* <h2 className="mt-4 text-3xl font-semibold uppercase tracking-[0.08em] sm:text-4xl">
                 Essentials
-              </h2>
+              </h2> */}
             </div>
 
             <Link
