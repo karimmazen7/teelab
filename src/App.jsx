@@ -1,5 +1,10 @@
 import { Route, Routes } from "react-router";
 
+import AdminLayout from "./components/admin/AdminLayout";
+import MetaPixelTracker from "./components/MetaPixelTracker";
+import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
+import ScrollToTop from "./components/ScrollToTop";
+
 import StoreLayout from "./layouts/StoreLayout";
 
 import Cart from "./pages/Cart";
@@ -15,10 +20,6 @@ import ProductDetails from "./pages/ProductDetails";
 import Products from "./pages/Products";
 import ReturnsExchanges from "./pages/ReturnsExchanges";
 
-import AdminLayout from "./components/admin/AdminLayout";
-import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
-import ScrollToTop from "./components/ScrollToTop";
-
 import AdminContact from "./pages/admin/AdminContact";
 import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -32,12 +33,10 @@ function App() {
     <>
       <ScrollToTop />
 
+      <MetaPixelTracker />
+
       <Routes>
-        {/*
-          Checkout uses its own dedicated navbar.
-          It is outside StoreLayout to prevent the global navbar,
-          announcement bar, and footer from appearing.
-        */}
+        {/* Checkout has its own layout */}
         <Route path="/checkout" element={<Checkout />} />
 
         {/* Public store pages */}
