@@ -1,8 +1,13 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import { useCart } from "../context/CartContext";
 import { placeOrder } from "../services/orderService";
+import {
+  generateMetaEventId,
+  trackInitiateCheckout,
+  trackPurchase,
+} from "../lib/metaPixel";
 
 const egyptGovernorates = [
   "Cairo",
@@ -318,8 +323,24 @@ export default function Checkout() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  const checkoutTrackedRef = useRef(false);
+
   const deliveryFee = subtotal >= 1500 ? 0 : 75;
   const total = Number(subtotal) + Number(deliveryFee);
+
+  useEffect(() => {
+    if (
+      checkoutTrackedRef.current ||
+      !Array.isArray(cartItems) ||
+      cartItems.length === 0
+    ) {
+      return;
+    }
+
+    checkoutTrackedRef.current = true;
+
+    trackInitiateCheckout(cartItems, subtotal);
+  }, [cartItems, subtotal]);
 
   const changeCustomer = (key) => (event) => {
     const value = event.target.value;
@@ -482,16 +503,47 @@ export default function Checkout() {
         deliveryFee,
       });
 
+      const orderNumber =
+        result?.order_number ||
+        result?.orderNumber ||
+        result?.order?.order_number;
+
+      if (!orderNumber) {
+        throw new Error("The created order number could not be loaded.");
+      }
+
+      const purchaseEventId = generateMetaEventId("purchase");
+
+      const orderTotal =
+        Number(
+          result?.total_amount ??
+            result?.totalAmount ??
+            result?.order?.total_amount,
+        ) || total;
+
+      trackPurchase({
+        orderNumber,
+        cartItems,
+        value: orderTotal,
+        eventId: purchaseEventId,
+      });
+
       sessionStorage.setItem(
-        `teelab-order-${result.order_number}`,
+        `teelab-order-${orderNumber}`,
         JSON.stringify({
-          token: result.public_token,
+          token:
+            result?.public_token ||
+            result?.publicToken ||
+            result?.order?.public_token ||
+            null,
           customerName: fullName,
+          metaEventId: purchaseEventId,
+          totalAmount: orderTotal,
         }),
       );
 
       clearCart();
-      navigate(`/order-success/${result.order_number}`);
+      navigate(`/order-success/${orderNumber}`);
     } catch (checkoutError) {
       console.error(checkoutError);
 

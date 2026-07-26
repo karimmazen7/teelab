@@ -7,25 +7,32 @@ import {
   useState,
 } from "react";
 
+import { trackAddToCart } from "../lib/metaPixel";
+
 const CartContext = createContext(null);
+
 const CART_STORAGE_KEY = "teelab_cart";
 
 const createCustomCartItemId = () =>
   `custom-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
 export const getCartItemKey = (item) => {
-  if (item.isCustom) {
+  if (item?.isCustom) {
     return item.cartItemId || item.id;
   }
 
-  const selectedSize = item.selectedSize || item.tshirtSize || "no-size";
+  const selectedSize = item?.selectedSize || item?.tshirtSize || "no-size";
 
-  const selectedColor = item.selectedColor || item.tshirtColor || "no-color";
+  const selectedColor = item?.selectedColor || item?.tshirtColor || "no-color";
 
-  return `${item.id}-${selectedSize}-${selectedColor}`;
+  return `${item?.id}-${selectedSize}-${selectedColor}`;
 };
 
 const loadCartFromStorage = () => {
+  if (typeof window === "undefined") {
+    return [];
+  }
+
   try {
     const savedCart = localStorage.getItem(CART_STORAGE_KEY);
 
@@ -43,6 +50,7 @@ const loadCartFromStorage = () => {
       .filter((item) => item && typeof item === "object")
       .map((item) => {
         const quantity = Math.max(1, Number(item.quantity) || 1);
+
         const cartItemId = item.cartItemId || getCartItemKey(item);
 
         return {
@@ -53,15 +61,21 @@ const loadCartFromStorage = () => {
       });
   } catch (error) {
     console.error("Failed to load cart from localStorage:", error);
+
     return [];
   }
 };
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState(loadCartFromStorage);
+
   const skipNextStorageSave = useRef(false);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     if (skipNextStorageSave.current) {
       skipNextStorageSave.current = false;
       return;
@@ -75,6 +89,10 @@ export function CartProvider({ children }) {
   }, [cartItems]);
 
   const addToCart = (product, selectedSize, selectedColor) => {
+    if (!product) {
+      throw new Error("Product is required.");
+    }
+
     const finalSize =
       selectedSize || product.selectedSize || product.tshirtSize || "";
 
@@ -93,10 +111,23 @@ export function CartProvider({ children }) {
       tshirtColor: finalColor,
 
       quantity: quantityToAdd,
+
       isCustom: false,
+      productType: product.productType || "standard",
     };
 
     const cartItemId = getCartItemKey(newItem);
+
+    const finalItem = {
+      ...newItem,
+      cartItemId,
+    };
+
+    /*
+      Send the Meta AddToCart event only when the customer
+      explicitly adds the product to the cart.
+    */
+    trackAddToCart(finalItem, quantityToAdd);
 
     setCartItems((currentItems) => {
       const existingItem = currentItems.find(
@@ -115,14 +146,10 @@ export function CartProvider({ children }) {
         );
       }
 
-      return [
-        ...currentItems,
-        {
-          ...newItem,
-          cartItemId,
-        },
-      ];
+      return [...currentItems, finalItem];
     });
+
+    return finalItem;
   };
 
   const addCustomToCart = ({
@@ -165,14 +192,17 @@ export function CartProvider({ children }) {
 
     const cartItemId = createCustomCartItemId();
 
+    const finalProductName = productName || name || "Custom T-Shirt";
+
     const customItem = {
       id: cartItemId,
       cartItemId,
 
-      name: productName || name,
-      productName: productName || name,
+      name: finalProductName,
+      productName: finalProductName,
 
       image: previewImage || image || null,
+
       images: Array.isArray(images) ? images : [],
 
       previewImage,
@@ -184,7 +214,9 @@ export function CartProvider({ children }) {
       quantity: finalQuantity,
 
       selectedColor: finalColor,
+
       selectedColorLabel: selectedColorLabel || finalColor,
+
       selectedSize: finalSize,
 
       tshirtColor: finalColor,
@@ -196,7 +228,15 @@ export function CartProvider({ children }) {
       productType: "custom-tshirt",
     };
 
+    /*
+      Send AddToCart for the customized T-shirt.
+      Meta will receive the custom item's price and quantity.
+    */
+    trackAddToCart(customItem, finalQuantity);
+
     setCartItems((currentItems) => [...currentItems, customItem]);
+
+    return customItem;
   };
 
   const increaseQuantity = (cartItemKey) => {
@@ -249,10 +289,12 @@ export function CartProvider({ children }) {
   const clearCart = () => {
     skipNextStorageSave.current = true;
 
-    try {
-      localStorage.removeItem(CART_STORAGE_KEY);
-    } catch (error) {
-      console.error("Failed to clear cart from localStorage:", error);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(CART_STORAGE_KEY);
+      } catch (error) {
+        console.error("Failed to clear cart from localStorage:", error);
+      }
     }
 
     setCartItems([]);
@@ -269,12 +311,13 @@ export function CartProvider({ children }) {
 
   const subtotal = useMemo(
     () =>
-      cartItems.reduce(
-        (total, item) =>
-          total +
-          (Number(item.price) || 0) * Math.max(1, Number(item.quantity) || 1),
-        0,
-      ),
+      cartItems.reduce((total, item) => {
+        const price = Math.max(0, Number(item.price) || 0);
+
+        const quantity = Math.max(1, Number(item.quantity) || 1);
+
+        return total + price * quantity;
+      }, 0),
     [cartItems],
   );
 

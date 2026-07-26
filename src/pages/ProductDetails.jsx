@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { products } from "../data/products";
 import { useCart } from "../context/CartContext";
+import { trackViewContent } from "../lib/metaPixel";
 
 const colorValues = {
   Black: "#111111",
@@ -96,6 +97,14 @@ function ProductDetails() {
   }, [productId, product]);
 
   useEffect(() => {
+    if (!product?.id) {
+      return;
+    }
+
+    trackViewContent(product);
+  }, [product?.id]);
+
+  useEffect(() => {
     document.body.style.overflow = sizeModalOpen ? "hidden" : "";
 
     const handleEscape = (event) => {
@@ -162,9 +171,14 @@ function ProductDetails() {
   };
 
   const addSelectedProduct = () => {
-    for (let index = 0; index < quantity; index += 1) {
-      addToCart(product, selectedSize, selectedColor);
-    }
+    addToCart(
+      {
+        ...product,
+        quantity,
+      },
+      selectedSize,
+      selectedColor,
+    );
 
     setAdded(true);
 
@@ -174,9 +188,14 @@ function ProductDetails() {
   };
 
   const handleBuyNow = () => {
-    for (let index = 0; index < quantity; index += 1) {
-      addToCart(product, selectedSize, selectedColor);
-    }
+    addToCart(
+      {
+        ...product,
+        quantity,
+      },
+      selectedSize,
+      selectedColor,
+    );
 
     navigate("/cart");
   };
