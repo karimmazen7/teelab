@@ -8,11 +8,11 @@ function MetaPixelTracker() {
   const previousLocationRef = useRef("");
 
   useEffect(() => {
-    const currentLocation = `${location.pathname}${location.search}`;
-
     if (location.pathname.startsWith("/admin")) {
       return;
     }
+
+    const currentLocation = `${location.pathname}${location.search}`;
 
     if (previousLocationRef.current === currentLocation) {
       return;
