@@ -138,12 +138,12 @@ export const products = [
 
     colorImages: {
       white: "/images/women3.png",
-      black: "/images/wmodel2.jpg",
+      black: "/images/women4.png",
     },
 
     images: ["/images/wmodel2.jpg", "/images/women3.png", "/images/women4.png"],
 
-    colors: ["white", "black"],
+    colors: ["black", "white"],
     sizes: ["M", "L", "XL"],
   },
 
@@ -170,7 +170,7 @@ export const products = [
 
   {
     id: "basic-olive-tee4",
-    name: "Porsche Dreams Tee",
+    name: "Porsche Tee",
     gender: "women",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
@@ -185,7 +185,7 @@ export const products = [
 
     images: ["/images/wmodel4.jpg", "/images/women7.png", "/images/women8.png"],
 
-    colors: ["white", "black"],
+    colors: ["black", "white"],
     sizes: ["M", "L", "XL"],
   },
 
@@ -281,7 +281,7 @@ export const products = [
       "/images/women18.png",
     ],
 
-    colors: ["white", "black"],
+    colors: ["black", "white"],
     sizes: ["M", "L", "XL"],
   },
 
@@ -338,13 +338,163 @@ export const products = [
     image: "/images/women16.png",
 
     colorImages: {
-      white: "/images/women15.png",
       black: "/images/women16.png",
+      white: "/images/women15.png",
     },
 
     images: [
       "/images/women16.png",
       "/images/women15.png",
+      //  "/images/women18.png",
+    ],
+
+    colors: ["black", "white"],
+    sizes: ["M", "L", "XL"],
+  },
+
+  {
+    id: "basic-olive-tee14",
+    name: "Stranger Things Tee",
+    gender: "unisex",
+    description:
+      "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
+    price: 1000,
+
+    image: "/images/strangerwhite.jpg",
+
+    colorImages: {
+      white: "/images/strangerwhite.jpg",
+      black: "/images/strangerblack.jpg",
+    },
+
+    images: [
+      "/images/strangerwhite.jpg",
+      "/images/strangerblack.jpg",
+      //  "/images/women18.png",
+    ],
+
+    colors: ["white", "black"],
+    sizes: ["M", "L", "XL"],
+  },
+
+  {
+    id: "basic-olive-tee12",
+    name: "Thanos Tee",
+    gender: "unisex",
+    description:
+      "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
+    price: 1000,
+
+    image: "/images/thanoshand2.png",
+
+    colorImages: {
+      black: "/images/thanoshand2.png",
+      white: "/images/thanshand.png",
+    },
+
+    images: [
+      "/images/thanoshand2.png",
+      "/images/thanshand.png",
+      //  "/images/women18.png",
+    ],
+
+    colors: ["black", "white"],
+    sizes: ["M", "L", "XL"],
+  },
+
+  {
+    id: "basic-olive-tee13",
+    name: "Harry Potter Tee",
+    gender: "unisex",
+    description:
+      "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
+    price: 1000,
+
+    image: "/images/harryblack.jpg",
+
+    colorImages: {
+      black: "/images/harryblack.jpg",
+      white: "/images/harrywhite.jpg",
+    },
+
+    images: [
+      "/images/harryblack.jpg",
+      "/images/harrywhite.jpg",
+      //  "/images/women18.png",
+    ],
+
+    colors: ["black", "white"],
+    sizes: ["M", "L", "XL"],
+  },
+
+  {
+    id: "basic-olive-tee15",
+    name: "Michael Jackson Tee",
+    gender: "unisex",
+    description:
+      "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
+    price: 1000,
+
+    image: "/images/jacksonwhite.jpg",
+
+    colorImages: {
+      white: "/images/jacksonwhite.jpg",
+      black: "/images/jacksonblack.jpg",
+    },
+
+    images: [
+      "/images/jacksonwhite.jpg",
+      "/images/jacksonblack.jpg",
+      //  "/images/women18.png",
+    ],
+
+    colors: ["white", "black"],
+    sizes: ["M", "L", "XL"],
+  },
+
+  {
+    id: "basic-olive-tee16",
+    name: "Scarface Tee",
+    gender: "unisex",
+    description:
+      "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
+    price: 1000,
+
+    image: "/images/scarfaceblack.jpg",
+
+    colorImages: {
+      black: "/images/scarfaceblack.jpg",
+      white: "/images/scarface.jpg",
+    },
+
+    images: [
+      "/images/scarfaceblack.jpg",
+      "/images/scarface.jpg",
+      //  "/images/women18.png",
+    ],
+
+    colors: ["black", "white"],
+    sizes: ["M", "L", "XL"],
+  },
+
+  {
+    id: "basic-olive-tee17",
+    name: "Game of Thrones Tee",
+    gender: "unisex",
+    description:
+      "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
+    price: 1000,
+
+    image: "/images/gamewhite.jpg",
+
+    colorImages: {
+      white: "/images/gamewhite.jpg",
+      black: "/images/gameblack.jpg",
+    },
+
+    images: [
+      "/images/gamewhite.jpg",
+      "/images/gameblack.jpg",
       //  "/images/women18.png",
     ],
 

@@ -639,12 +639,12 @@ export default function Checkout() {
                   Contact
                 </h1>
 
-                <Link
+                {/* <Link
                   to="/admin/login"
                   className="text-[13px] text-black underline underline-offset-4"
                 >
                   Sign in
-                </Link>
+                </Link> */}
               </div>
 
               <div className="mt-5">
