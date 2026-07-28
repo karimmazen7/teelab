@@ -13,12 +13,14 @@ import Contact from "./pages/Contact";
 import Customizer from "./pages/Customizer";
 import Faq from "./pages/Faq";
 import Home from "./pages/Home";
+import Men from "./pages/Men";
 import NotFound from "./pages/NotFound";
 import OrderSuccess from "./pages/OrderSuccess";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ProductDetails from "./pages/ProductDetails";
 import Products from "./pages/Products";
 import ReturnsExchanges from "./pages/ReturnsExchanges";
+import Women from "./pages/Women";
 
 import AdminContact from "./pages/admin/AdminContact";
 import AdminCustomers from "./pages/admin/AdminCustomers";
@@ -42,6 +44,10 @@ function App() {
         {/* Public store pages */}
         <Route element={<StoreLayout />}>
           <Route path="/" element={<Home />} />
+
+          <Route path="/men" element={<Men />} />
+
+          <Route path="/women" element={<Women />} />
 
           <Route path="/products" element={<Products />} />
 

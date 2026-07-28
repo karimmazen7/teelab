@@ -29,8 +29,8 @@ const PRINT_AREA = {
 };
 
 const tshirtColors = {
-  white: "/images/tshirt-white.png",
-  black: "/images/tshirt-black.png",
+  white: "/images/tshirt-white1.png",
+  black: "/images/tshirt-black1.png",
   blue: "/images/tshirt-blue.png",
 };
 

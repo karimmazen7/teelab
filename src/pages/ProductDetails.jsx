@@ -140,6 +140,18 @@ function ProductDetails() {
 
   const selectedImage = productImages[selectedImageIndex];
 
+  const getColorImage = (color) => {
+    if (!product?.colorImages || !color) {
+      return null;
+    }
+
+    const matchingColorKey = Object.keys(product.colorImages).find(
+      (key) => key.toLowerCase() === color.toLowerCase(),
+    );
+
+    return matchingColorKey ? product.colorImages[matchingColorKey] : null;
+  };
+
   const selectImage = (index) => {
     if (index === selectedImageIndex) return;
 
@@ -150,6 +162,25 @@ function ProductDetails() {
       setSelectedImageIndex(index);
       setImageVisible(true);
     }, 150);
+  };
+
+  const handleColorSelect = (color) => {
+    setSelectedColor(color);
+
+    const colorImage = getColorImage(color);
+
+    if (!colorImage) {
+      selectImage(0);
+      return;
+    }
+
+    const colorImageIndex = productImages.findIndex(
+      (image) => image === colorImage,
+    );
+
+    if (colorImageIndex >= 0) {
+      selectImage(colorImageIndex);
+    }
   };
 
   const showPreviousImage = () => {
@@ -170,10 +201,17 @@ function ProductDetails() {
     selectImage(newIndex);
   };
 
+  const selectedColorImage =
+    getColorImage(selectedColor) || selectedImage || product.image;
+
   const addSelectedProduct = () => {
     addToCart(
       {
         ...product,
+        image: selectedColorImage,
+        selectedImage: selectedColorImage,
+        selectedColor,
+        selectedSize,
         quantity,
       },
       selectedSize,
@@ -191,6 +229,10 @@ function ProductDetails() {
     addToCart(
       {
         ...product,
+        image: selectedColorImage,
+        selectedImage: selectedColorImage,
+        selectedColor,
+        selectedSize,
         quantity,
       },
       selectedSize,
@@ -391,10 +433,7 @@ function ProductDetails() {
                 <button
                   key={color}
                   type="button"
-                  onClick={() => {
-                    setSelectedColor(color);
-                    selectImage(0);
-                  }}
+                  onClick={() => handleColorSelect(color)}
                   className={`flex h-10 w-10 items-center justify-center border transition-all duration-300 ${
                     selectedColor === color
                       ? "border-[#111]"
@@ -408,7 +447,12 @@ function ProductDetails() {
                     className="h-8 w-8 border border-[#D8D8D8]"
                     style={{
                       backgroundColor:
-                        colorValues[color] ?? color.toLowerCase(),
+                        colorValues[color] ??
+                        colorValues[
+                          color.charAt(0).toUpperCase() +
+                            color.slice(1).toLowerCase()
+                        ] ??
+                        color.toLowerCase(),
                     }}
                   />
                 </button>

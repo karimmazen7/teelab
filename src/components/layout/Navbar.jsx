@@ -6,6 +6,14 @@ import { useCart } from "../../context/CartContext";
 
 const luxuryEase = [0.22, 1, 0.36, 1];
 
+const navigationLinks = [
+  { label: "Home", path: "/" },
+  { label: "Men", path: "/men" },
+  { label: "Women", path: "/women" },
+  { label: "Unisex", path: "/products" },
+  { label: "Create Your Design", path: "/customizer" },
+];
+
 function SearchIcon() {
   return (
     <svg
@@ -164,21 +172,18 @@ function Navbar() {
               <MenuIcon />
             </button>
 
-            <div className="hidden items-center gap-7 lg:flex">
-              <NavLink to="/" className={navLinkClass}>
-                Home
-                <span className="absolute bottom-0 left-0 h-px w-0 bg-black transition-all duration-300 group-hover:w-full" />
-              </NavLink>
+            <div className="hidden items-center gap-6 lg:flex">
+              {navigationLinks.map((link) => (
+                <NavLink
+                  key={link.label}
+                  to={link.path}
+                  className={navLinkClass}
+                >
+                  {link.label}
 
-              <NavLink to="/products" className={navLinkClass}>
-                Unisex
-                <span className="absolute bottom-0 left-0 h-px w-0 bg-black transition-all duration-300 group-hover:w-full" />
-              </NavLink>
-
-              <NavLink to="/customizer" className={navLinkClass}>
-                Create Your Design
-                <span className="absolute bottom-0 left-0 h-px w-0 bg-black transition-all duration-300 group-hover:w-full" />
-              </NavLink>
+                  <span className="absolute bottom-0 left-0 h-px w-0 bg-black transition-all duration-300 group-hover:w-full" />
+                </NavLink>
+              ))}
             </div>
           </div>
 
@@ -200,7 +205,7 @@ function Navbar() {
 
             <button
               type="button"
-              aria-label={`Open shopping bag with ${cartCount} items`}
+              aria-label={`Open shopping cart with ${cartCount} items`}
               onClick={() => setCartOpen(true)}
               className="relative transition hover:opacity-55"
             >
@@ -216,7 +221,6 @@ function Navbar() {
         </nav>
       </motion.header>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
@@ -258,19 +262,15 @@ function Navbar() {
                 </button>
               </div>
 
-              <div className="mt-16 flex flex-col gap-7">
-                {[
-                  ["Home", "/"],
-                  ["Unisex", "/products"],
-                  ["Create Your Design", "/customizer"],
-                ].map(([label, path]) => (
+              <div className="mt-14 flex flex-col gap-5 overflow-y-auto">
+                {navigationLinks.map((link) => (
                   <Link
-                    key={label}
-                    to={path}
+                    key={link.label}
+                    to={link.path}
                     onClick={closeMenus}
-                    className="border-b border-neutral-200 pb-5 text-xl font-semibold uppercase tracking-[0.08em]"
+                    className="border-b border-neutral-200 pb-5 text-lg font-semibold uppercase tracking-[0.08em]"
                   >
-                    {label}
+                    {link.label}
                   </Link>
                 ))}
               </div>
@@ -288,13 +288,12 @@ function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* Shopping bag */}
       <AnimatePresence>
         {cartOpen && (
           <>
             <motion.button
               type="button"
-              aria-label="Close shopping bag overlay"
+              aria-label="Close shopping cart overlay"
               className="fixed inset-0 z-[70] bg-black/45"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -305,7 +304,7 @@ function Navbar() {
             <motion.aside
               role="dialog"
               aria-modal="true"
-              aria-label="Shopping bag"
+              aria-label="Shopping cart"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -328,7 +327,7 @@ function Navbar() {
 
                 <button
                   type="button"
-                  aria-label="Close shopping bag"
+                  aria-label="Close shopping cart"
                   onClick={() => setCartOpen(false)}
                 >
                   <CloseIcon />
@@ -337,30 +336,14 @@ function Navbar() {
 
               {cartItems.length === 0 ? (
                 <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
-                  {/* <p className="text-xs font-semibold uppercase tracking-[0.25em] text-neutral-500">
-                    Your Bag
-                  </p> */}
-
-                  <h2 className="mt-4 text-2xl font-semibold uppercase">
+                  <h2 className="text-2xl font-semibold uppercase">
                     Your cart is empty
                   </h2>
-
-                  {/* <p className="mt-4 text-sm leading-6 text-neutral-500">
-                    Explore TeeLab essentials or create a personalized design.
-                  </p> */}
-
-                  {/* <Link
-                    to="/products"
-                    onClick={closeMenus}
-                    className="mt-8 w-full bg-black px-6 py-4 text-center text-xs font-semibold uppercase tracking-[0.2em] text-white"
-                  >
-                    Continue Shopping
-                  </Link> */}
 
                   <Link
                     to="/customizer"
                     onClick={closeMenus}
-                    className="mt-3 w-full border border-black px-6 py-4 text-center text-xs font-semibold uppercase tracking-[0.2em]"
+                    className="mt-6 w-full border border-black px-6 py-4 text-center text-xs font-semibold uppercase tracking-[0.2em]"
                   >
                     Create Your Design
                   </Link>
@@ -373,7 +356,19 @@ function Navbar() {
                         const itemName =
                           item.productName || item.name || "TeeLab Product";
 
-                        const itemImage = item.previewImage || item.image;
+                        const itemColor =
+                          item.selectedColor ||
+                          item.color ||
+                          item.tshirtColor ||
+                          "";
+
+                        const normalizedColor = String(itemColor).toLowerCase();
+
+                        const itemImage =
+                          item.previewImage ||
+                          item.selectedImage ||
+                          item.colorImages?.[normalizedColor] ||
+                          item.image;
 
                         const itemSize = item.tshirtSize || item.selectedSize;
 
@@ -407,6 +402,12 @@ function Navbar() {
                                   {itemSize && (
                                     <p className="mt-2 text-xs text-neutral-500">
                                       Size: {itemSize}
+                                    </p>
+                                  )}
+
+                                  {itemColor && (
+                                    <p className="mt-1 text-xs capitalize text-neutral-500">
+                                      Color: {itemColor}
                                     </p>
                                   )}
 
@@ -496,22 +497,6 @@ function Navbar() {
                     >
                       Checkout
                     </Link>
-
-                    {/* <Link
-                      to="/cart"
-                      onClick={closeMenus}
-                      className="mt-3 block border border-black px-6 py-4 text-center text-xs font-semibold uppercase tracking-[0.2em] transition hover:bg-black hover:text-white"
-                    >
-                      View Bag
-                    </Link> */}
-
-                    {/* <button
-                      type="button"
-                      onClick={() => setCartOpen(false)}
-                      className="mt-4 w-full text-center text-xs underline underline-offset-4"
-                    >
-                      Continue Shopping
-                    </button> */}
                   </div>
                 </>
               )}

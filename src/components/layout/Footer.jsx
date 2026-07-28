@@ -80,7 +80,7 @@ function Footer() {
         {/* Social icons */}
         <div className="mt-12 flex items-center justify-start gap-[18px] text-[#666]">
           <a
-            href="https://www.facebook.com/"
+            href="https://www.facebook.com/profile.php?id=61592477789044"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Visit TeeLab on Facebook"
@@ -90,7 +90,7 @@ function Footer() {
           </a>
 
           <a
-            href="https://www.instagram.com/"
+            href="https://www.instagram.com/teelab.eg/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Visit TeeLab on Instagram"
