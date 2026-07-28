@@ -90,7 +90,7 @@ export const products = [
   },
   {
     id: "basic-olive-tee",
-    name: "Basic Olive Tee",
+    name: "Olive Tee",
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
@@ -107,7 +107,7 @@ export const products = [
 
   {
     id: "basic-olive-tee1",
-    name: "Trade Windr Tee",
+    name: "Shrimp Tee",
     gender: "women",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
@@ -191,7 +191,7 @@ export const products = [
 
   {
     id: "basic-olive-tee5",
-    name: "Every Sea Tee",
+    name: "Crab Tee",
     gender: "women",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
@@ -329,7 +329,7 @@ export const products = [
 
   {
     id: "basic-olive-tee11",
-    name: "Positive Vibe Tee",
+    name: "Vibe Tee",
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
@@ -354,7 +354,7 @@ export const products = [
 
   {
     id: "basic-olive-tee14",
-    name: "Stranger Things Tee",
+    name: "ST Tee",
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
@@ -429,7 +429,7 @@ export const products = [
 
   {
     id: "basic-olive-tee15",
-    name: "Michael Jackson Tee",
+    name: "MJ Tee",
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
@@ -479,7 +479,7 @@ export const products = [
 
   {
     id: "basic-olive-tee17",
-    name: "Game of Thrones Tee",
+    name: "GoT Tee",
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
