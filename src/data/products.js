@@ -34,9 +34,9 @@ export const products = [
     description:
       "Premium relaxed-fit grey sweatpants designed for everyday comfort.",
     price: 950,
-    image: "/images/grey-sweatpants1.png",
+    image: "/images/grey-sweatpants.jpg",
     images: [
-      "/images/grey-sweatpants1.png",
+      "/images/grey-sweatpants.jpg",
       "/images/grey-sweatpants2.png",
       "/images/OliveTee1.png",
       "/images/OliveTee2.png",
@@ -54,7 +54,7 @@ export const products = [
     image: "/images/black-sweatpants1.png",
     images: [
       "/images/black-sweatpants1.png",
-      "/images/black-sweatpants2.png",
+      "/images/black-sweatpants.jpg",
       "/images/OliveTee3.png",
     ],
     colors: ["Black"],
