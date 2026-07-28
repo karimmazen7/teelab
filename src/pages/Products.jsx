@@ -1,5 +1,11 @@
-import ProductCard from "../components/ProductCard";
+import { Link } from "react-router";
 import { products } from "../data/products";
+
+const formatMoney = (value) =>
+  `${Number(value || 0).toLocaleString("en-EG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })} EGP`;
 
 function Products() {
   const unisexProducts = products.filter(
@@ -7,33 +13,77 @@ function Products() {
   );
 
   return (
-    <section className="mx-auto min-h-screen max-w-7xl px-5 py-16 lg:px-8">
-      <div className="mb-14">
-        <p className="text-sm uppercase tracking-[0.25em] text-neutral-500">
+    <main className="min-h-screen bg-white">
+      {/* Optional heading section */}
+      {/* <section className="px-5 pb-10 pt-14 text-center sm:px-8 lg:pt-20">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-neutral-500">
           TeeLab Collection
         </p>
 
-        <h1 className="mt-3 text-4xl font-black sm:text-5xl">Unisex</h1>
+        <h1 className="mt-3 text-4xl font-semibold uppercase tracking-tight sm:text-5xl">
+          Unisex
+        </h1>
 
-        <p className="mt-5 max-w-xl leading-7 text-neutral-600">
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-neutral-500">
           Explore versatile TeeLab essentials designed for everyone.
         </p>
-      </div>
+      </section> */}
 
-      {unisexProducts.length > 0 ? (
-        <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-          {unisexProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      ) : (
-        <div className="py-20 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-neutral-500">
-            No unisex products available
-          </p>
-        </div>
-      )}
-    </section>
+      <section className="mx-auto max-w-[1600px] px-5 pb-20 pt-10 sm:px-8 lg:px-12">
+        {unisexProducts.length > 0 ? (
+          <div className="grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-7 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-16">
+            {unisexProducts.map((product, index) => (
+              <article key={product.id} className="group">
+                <div className="relative aspect-[4/5] overflow-hidden bg-neutral-100">
+                  <Link
+                    to={`/products/${product.id}`}
+                    aria-label={`View ${product.name}`}
+                    className="block h-full w-full"
+                  >
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      loading={index > 3 ? "lazy" : "eager"}
+                      decoding="async"
+                      width="800"
+                      height="1000"
+                      className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
+                    />
+                  </Link>
+
+                  <div className="pointer-events-none absolute inset-0 bg-black/0 transition duration-500 group-hover:bg-black/[0.03]" />
+                </div>
+
+                <div className="pt-5">
+                  <Link to={`/products/${product.id}`}>
+                    <h2 className="text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm">
+                      {product.name}
+                    </h2>
+                  </Link>
+
+                  <p className="mt-2 text-xs tracking-[0.14em] text-neutral-600 sm:text-sm">
+                    {formatMoney(product.price)}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="py-24 text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-neutral-500">
+              Unisex collection coming soon
+            </p>
+
+            <Link
+              to="/"
+              className="mt-7 inline-block border border-black bg-black px-7 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-white hover:text-black"
+            >
+              Return Home
+            </Link>
+          </div>
+        )}
+      </section>
+    </main>
   );
 }
 

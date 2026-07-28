@@ -14,7 +14,7 @@ function Women() {
 
   return (
     <main className="min-h-screen bg-white">
-      <section className="px-5 pb-10 pt-14 text-center sm:px-8 lg:pt-20">
+      {/* <section className="px-5 pb-10 pt-14 text-center sm:px-8 lg:pt-20">
         <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-neutral-500">
           TeeLab Collection
         </p>
@@ -27,7 +27,7 @@ function Women() {
           Discover modern women’s essentials made for comfort, versatility and
           everyday styling.
         </p>
-      </section>
+      </section> */}
 
       <section className="mx-auto max-w-[1600px] px-5 pb-20 sm:px-8 lg:px-12">
         {womenProducts.length > 0 ? (
