@@ -27,7 +27,7 @@ function Men() {
         </p>
       </section> */}
 
-      <section className="mx-auto max-w-[1600px] px-5 pb-20 sm:px-8 lg:px-12">
+      <section className="mx-auto max-w-[1600px] px-5 pb-20 pt-10 sm:px-8 lg:px-12">
         {menProducts.length > 0 ? (
           <div className="grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-7 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-16">
             {menProducts.map((product, index) => (
