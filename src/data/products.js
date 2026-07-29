@@ -6,11 +6,11 @@ export const products = [
     description:
       "Premium oversized cotton T-shirt with a clean, timeless finish.",
     price: 850,
-    image: "/images/vintage-tee.png",
+    image: "/images/black-tee1.png",
     images: [
-      "/images/vintage-tee.png",
-      "/images/essential-tee.png",
-      "/images/blacktee.png",
+      "/images/black-tee1.png",
+      "/images/black-tee2.png",
+      "/images/black-tee4.png",
     ],
     colors: ["Black"],
     sizes: ["M", "L", "XL"],
@@ -22,8 +22,8 @@ export const products = [
     description:
       "Minimal oversized T-shirt designed for everyday comfort and styling.",
     price: 850,
-    image: "/images/classic-tee.png",
-    images: ["/images/classic-tee.png", "/images/whitetee.png"],
+    image: "/images/white-tee1.png",
+    images: ["/images/white-tee1.png", "/images/whitetee.png"],
     colors: ["White"],
     sizes: ["M", "L", "XL"],
   },
@@ -34,9 +34,9 @@ export const products = [
     description:
       "Premium relaxed-fit grey sweatpants designed for everyday comfort.",
     price: 950,
-    image: "/images/grey-sweatpants.jpg",
+    image: "/images/grey-sweatpants10.png",
     images: [
-      "/images/grey-sweatpants.jpg",
+      "/images/grey-sweatpants10.png",
       "/images/grey-sweatpants2.png",
       "/images/OliveTee1.png",
       "/images/OliveTee2.png",
@@ -51,10 +51,10 @@ export const products = [
     description:
       "Premium relaxed-fit black sweatpants with a clean, versatile finish.",
     price: 950,
-    image: "/images/black-sweatpants1.png",
+    image: "/images/black-tee10.png",
     images: [
-      "/images/black-sweatpants1.png",
-      "/images/black-sweatpants.jpg",
+      "/images/black-tee10.png",
+      "/images/black-sweatpants11.png",
       "/images/OliveTee3.png",
     ],
     colors: ["Black"],
@@ -67,9 +67,9 @@ export const products = [
     description:
       "Premium mocha polo with a refined silhouette and a clean everyday finish.",
     price: 950,
-    image: "/images/MochaPolo1.png",
+    image: "/images/browen-jacket.png",
     images: [
-      "/images/MochaPolo1.png",
+      "/images/browen-jacket.png",
       "/images/MochaPolo2.png",
       "/images/MochaPolo3.png",
     ],
