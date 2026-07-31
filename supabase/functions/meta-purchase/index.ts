@@ -111,6 +111,11 @@ function getClientIp(request: Request) {
 }
 
 Deno.serve(async (request) => {
+  console.log("META PURCHASE REQUEST", {
+    method: request.method,
+    time: new Date().toISOString(),
+  });
+
   if (request.method === "OPTIONS") {
     return new Response("ok", {
       headers: corsHeaders,
@@ -173,6 +178,14 @@ Deno.serve(async (request) => {
 
   try {
     payload = await request.json();
+
+    console.log("META PURCHASE PAYLOAD", {
+      order_number: payload.order_number,
+      has_public_token: Boolean(payload.public_token),
+      event_id: payload.event_id,
+      has_fbp: Boolean(payload.fbp),
+      has_fbc: Boolean(payload.fbc),
+    });
   } catch {
     return jsonResponse(
       {
@@ -225,6 +238,11 @@ Deno.serve(async (request) => {
       p_token: publicToken,
     });
 
+  console.log("PUBLIC ORDER RESULT", {
+    hasData: Boolean(publicOrderResult),
+    error: publicOrderError,
+  });
+
   if (publicOrderError) {
     console.error("Public order RPC error:", publicOrderError);
 
@@ -272,11 +290,25 @@ Deno.serve(async (request) => {
   /*
     Prevent duplicate server submissions.
   */
-  const { data: existingEvent } = await supabaseAdmin
-    .from("meta_conversion_events")
-    .select("id,status,meta_response")
-    .eq("event_id", eventId)
-    .maybeSingle();
+  const { data: existingEvent, error: existingEventError } =
+    await supabaseAdmin
+      .from("meta_conversion_events")
+      .select("id,status,meta_response")
+      .eq("event_id", eventId)
+      .maybeSingle();
+
+  if (existingEventError) {
+    console.error("META EVENT LOOKUP ERROR:", existingEventError);
+
+    return jsonResponse(
+      {
+        success: false,
+        message: "Could not check the Meta event history.",
+        database_error: existingEventError.message,
+      },
+      500,
+    );
+  }
 
   if (existingEvent?.status === "sent") {
     return jsonResponse({
@@ -497,21 +529,50 @@ Deno.serve(async (request) => {
     metaRequestBody.test_event_code = metaTestEventCode;
   }
 
-  await supabaseAdmin
-    .from("meta_conversion_events")
-    .upsert(
+  console.log("CREATING META EVENT RECORD", {
+    eventId,
+    orderNumber,
+    orderId: orderId || null,
+    totalAmount,
+  });
+
+  const { data: savedEvent, error: saveEventError } =
+    await supabaseAdmin
+      .from("meta_conversion_events")
+      .upsert(
+        {
+          event_id: eventId,
+          event_name: "Purchase",
+          order_number: orderNumber,
+          order_id: orderId || null,
+          status: "pending",
+          error_message: null,
+        },
+        {
+          onConflict: "event_id",
+        },
+      )
+      .select()
+      .single();
+
+  if (saveEventError) {
+    console.error("META CONVERSION EVENT INSERT ERROR:", saveEventError);
+
+    return jsonResponse(
       {
-        event_id: eventId,
-        event_name: "Purchase",
-        order_number: orderNumber,
-        order_id: orderId || null,
-        status: "pending",
-        error_message: null,
+        success: false,
+        message: "Could not save the Meta event.",
+        database_error: saveEventError.message,
       },
-      {
-        onConflict: "event_id",
-      },
+      500,
     );
+  }
+
+  console.log("META EVENT RECORD CREATED", {
+    id: savedEvent?.id,
+    event_id: savedEvent?.event_id,
+    status: savedEvent?.status,
+  });
 
   const metaEndpoint =
     `https://graph.facebook.com/` +
@@ -520,6 +581,13 @@ Deno.serve(async (request) => {
     `?access_token=${encodeURIComponent(metaAccessToken)}`;
 
   try {
+    console.log("SENDING PURCHASE TO META", {
+      eventId,
+      orderNumber,
+      totalAmount,
+      testMode: Boolean(metaTestEventCode),
+    });
+
     const metaResponse = await fetch(metaEndpoint, {
       method: "POST",
       headers: {
@@ -529,6 +597,12 @@ Deno.serve(async (request) => {
     });
 
     const metaResponseBody = await metaResponse.json();
+
+    console.log("META RESPONSE", {
+      status: metaResponse.status,
+      ok: metaResponse.ok,
+      body: metaResponseBody,
+    });
 
     if (!metaResponse.ok) {
       await supabaseAdmin
@@ -554,7 +628,7 @@ Deno.serve(async (request) => {
       );
     }
 
-    await supabaseAdmin
+    const { error: sentUpdateError } = await supabaseAdmin
       .from("meta_conversion_events")
       .update({
         status: "sent",
@@ -563,6 +637,18 @@ Deno.serve(async (request) => {
         sent_at: new Date().toISOString(),
       })
       .eq("event_id", eventId);
+
+    if (sentUpdateError) {
+      console.error("META EVENT SENT-STATUS UPDATE ERROR:", sentUpdateError);
+    }
+
+    console.log("META PURCHASE SENT SUCCESSFULLY", {
+      orderNumber,
+      eventId,
+      totalAmount,
+      eventsReceived: metaResponseBody?.events_received ?? null,
+      fbtraceId: metaResponseBody?.fbtrace_id ?? null,
+    });
 
     return jsonResponse({
       success: true,
