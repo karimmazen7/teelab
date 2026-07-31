@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router";
 
 import { useCart } from "../context/CartContext";
 import { placeOrder } from "../services/orderService";
+import { sendPurchaseToConversionsApi } from "../services/metaConversionsService";
 import {
   generateMetaEventId,
   trackInitiateCheckout,
@@ -512,6 +513,18 @@ export default function Checkout() {
         throw new Error("The created order number could not be loaded.");
       }
 
+      const publicToken =
+        result?.public_token ||
+        result?.publicToken ||
+        result?.order?.public_token ||
+        null;
+
+      if (!publicToken) {
+        throw new Error(
+          "The order was created, but its public confirmation token is missing.",
+        );
+      }
+
       const purchaseEventId = generateMetaEventId("purchase");
 
       const orderTotal =
@@ -521,6 +534,7 @@ export default function Checkout() {
             result?.order?.total_amount,
         ) || total;
 
+      // Send the browser Purchase event through Meta Pixel.
       trackPurchase({
         orderNumber,
         cartItems,
@@ -528,14 +542,25 @@ export default function Checkout() {
         eventId: purchaseEventId,
       });
 
+      // Send the server Purchase event through Meta Conversions API.
+      // The same event ID lets Meta deduplicate the browser and server events.
+      try {
+        const capiResponse = await sendPurchaseToConversionsApi({
+          orderNumber,
+          publicToken,
+          eventId: purchaseEventId,
+        });
+
+        console.log("Meta server Purchase sent successfully:", capiResponse);
+      } catch (metaError) {
+        // The order is already created, so Meta tracking must not block checkout.
+        console.error("Meta server Purchase failed:", metaError);
+      }
+
       sessionStorage.setItem(
         `teelab-order-${orderNumber}`,
         JSON.stringify({
-          token:
-            result?.public_token ||
-            result?.publicToken ||
-            result?.order?.public_token ||
-            null,
+          token: publicToken,
           customerName: fullName,
           metaEventId: purchaseEventId,
           totalAmount: orderTotal,
@@ -639,12 +664,12 @@ export default function Checkout() {
                   Contact
                 </h1>
 
-                {/* <Link
+                <Link
                   to="/admin/login"
                   className="text-[13px] text-black underline underline-offset-4"
                 >
                   Sign in
-                </Link> */}
+                </Link>
               </div>
 
               <div className="mt-5">
