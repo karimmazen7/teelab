@@ -5,7 +5,8 @@ export const products = [
     gender: "unisex",
     description:
       "Premium oversized cotton T-shirt with a clean, timeless finish.",
-    price: 850,
+    price: 599,
+    oldPrice: 850,
     image: "/images/black-tee1.png",
     images: [
       "/images/black-tee1.png",
@@ -21,7 +22,8 @@ export const products = [
     gender: "unisex",
     description:
       "Minimal oversized T-shirt designed for everyday comfort and styling.",
-    price: 850,
+    price: 599,
+    oldPrice: 850,
     image: "/images/white-tee1.png",
     images: ["/images/white-tee1.png", "/images/whitetee.png"],
     colors: ["White"],
@@ -33,7 +35,8 @@ export const products = [
     gender: "unisex",
     description:
       "Premium relaxed-fit grey sweatpants designed for everyday comfort.",
-    price: 950,
+    price: 699,
+    oldPrice: 1100,
     image: "/images/grey-sweatpants10.png",
     images: [
       "/images/grey-sweatpants10.png",
@@ -50,7 +53,8 @@ export const products = [
     gender: "unisex",
     description:
       "Premium relaxed-fit black sweatpants with a clean, versatile finish.",
-    price: 950,
+    price: 699,
+    oldPrice: 950,
     image: "/images/black-tee10.png",
     images: [
       "/images/black-tee10.png",
@@ -66,7 +70,8 @@ export const products = [
     gender: "men",
     description:
       "Premium mocha polo with a refined silhouette and a clean everyday finish.",
-    price: 950,
+    price: 699,
+    oldPrice: 950,
     image: "/images/browen-jacket.png",
     images: [
       "/images/browen-jacket.png",
@@ -82,7 +87,8 @@ export const products = [
     gender: "men",
     description:
       "Premium black polo designed with a minimal silhouette and timeless finish.",
-    price: 950,
+    price: 699,
+    oldPrice: 950,
     image: "/images/NoirPolo1.png",
     images: ["/images/NoirPolo1.png", "/images/NoirPolo2.png"],
     colors: ["Black"],
@@ -94,7 +100,8 @@ export const products = [
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 850,
+    price: 599,
+    oldPrice: 850,
     image: "/images/OliveTee1.png",
     images: [
       "/images/OliveTee1.png",
@@ -111,7 +118,8 @@ export const products = [
     gender: "women",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/wmodel1.jpg",
 
@@ -132,7 +140,8 @@ export const products = [
     gender: "women",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/wmodel2.jpg",
 
@@ -153,7 +162,8 @@ export const products = [
     gender: "women",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/wmodel3.jpg",
 
@@ -174,7 +184,8 @@ export const products = [
     gender: "women",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/wmodel4.jpg",
 
@@ -195,7 +206,8 @@ export const products = [
     gender: "women",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/wmodel5.jpg",
 
@@ -216,7 +228,8 @@ export const products = [
     gender: "women",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/wmodel6.jpg",
 
@@ -241,7 +254,8 @@ export const products = [
     gender: "women",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/wmodel7.jpg",
 
@@ -266,7 +280,8 @@ export const products = [
     gender: "women",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/wmodel8.jpg",
 
@@ -291,7 +306,8 @@ export const products = [
     gender: "women",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/wmodel.jpg",
 
@@ -312,7 +328,8 @@ export const products = [
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/women19.png",
 
@@ -333,7 +350,8 @@ export const products = [
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/women16.png",
 
@@ -358,7 +376,8 @@ export const products = [
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/strangerwhite.jpg",
 
@@ -383,7 +402,8 @@ export const products = [
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/thanoshand2.png",
 
@@ -408,7 +428,8 @@ export const products = [
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/harryblack.jpg",
 
@@ -433,7 +454,8 @@ export const products = [
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/jacksonwhite.jpg",
 
@@ -458,7 +480,8 @@ export const products = [
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/scarfaceblack.jpg",
 
@@ -483,7 +506,8 @@ export const products = [
     gender: "unisex",
     description:
       "Premium olive T-shirt with a relaxed fit and a clean, versatile finish.",
-    price: 1000,
+    price: 799,
+    oldPrice: 1100,
 
     image: "/images/gamewhite.jpg",
 

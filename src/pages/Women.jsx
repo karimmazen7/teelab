@@ -7,6 +7,29 @@ const formatMoney = (value) =>
     maximumFractionDigits: 2,
   })} EGP`;
 
+function ProductPrice({ product }) {
+  const hasSale =
+    product.oldPrice && Number(product.oldPrice) > Number(product.price);
+
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+      <span
+        className={`text-xs tracking-[0.14em] sm:text-sm ${
+          hasSale ? "text-red-500" : "text-neutral-600"
+        }`}
+      >
+        {formatMoney(product.price)}
+      </span>
+
+      {hasSale && (
+        <span className="text-xs tracking-[0.14em] text-neutral-500 line-through sm:text-sm">
+          {formatMoney(product.oldPrice)}
+        </span>
+      )}
+    </div>
+  );
+}
+
 function Women() {
   const womenProducts = products.filter(
     (product) => product.gender === "women",
@@ -14,7 +37,9 @@ function Women() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* <section className="px-5 pb-10 pt-14 text-center sm:px-8 lg:pt-20">
+      {/* Optional heading section */}
+      {/*
+      <section className="px-5 pb-10 pt-14 text-center sm:px-8 lg:pt-20">
         <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-neutral-500">
           TeeLab Collection
         </p>
@@ -27,7 +52,8 @@ function Women() {
           Discover modern women’s essentials made for comfort, versatility and
           everyday styling.
         </p>
-      </section> */}
+      </section>
+      */}
 
       <section className="mx-auto max-w-[1600px] px-5 pb-20 pt-10 sm:px-8 lg:px-12">
         {womenProducts.length > 0 ? (
@@ -61,9 +87,9 @@ function Women() {
                     </h2>
                   </Link>
 
-                  <p className="mt-2 text-xs tracking-[0.14em] text-neutral-600 sm:text-sm">
-                    {formatMoney(product.price)}
-                  </p>
+                  <div className="mt-2">
+                    <ProductPrice product={product} />
+                  </div>
                 </div>
               </article>
             ))}

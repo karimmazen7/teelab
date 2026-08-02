@@ -12,6 +12,33 @@ const formatMoney = (value) =>
     maximumFractionDigits: 2,
   })} EGP`;
 
+function ProductPrice({ product, large = false }) {
+  const hasSale =
+    product.oldPrice && Number(product.oldPrice) > Number(product.price);
+
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+      <span
+        className={`tracking-[0.12em] ${
+          large ? "text-lg" : "text-xs sm:text-sm"
+        } ${hasSale ? "text-red-500" : "text-neutral-600"}`}
+      >
+        {formatMoney(product.price)}
+      </span>
+
+      {hasSale && (
+        <span
+          className={`text-neutral-500 line-through ${
+            large ? "text-base" : "text-xs sm:text-sm"
+          }`}
+        >
+          {formatMoney(product.oldPrice)}
+        </span>
+      )}
+    </div>
+  );
+}
+
 function PlusIcon() {
   return (
     <svg
@@ -192,10 +219,6 @@ function Home() {
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-neutral-500">
                 New Arrivals
               </p>
-
-              {/* <h2 className="mt-4 text-3xl font-semibold uppercase tracking-[0.08em] sm:text-4xl">
-                Essentials
-              </h2> */}
             </div>
 
             <Link
@@ -245,9 +268,9 @@ function Home() {
                     </h3>
                   </Link>
 
-                  <p className="mt-2 text-xs tracking-[0.14em] text-neutral-600 sm:text-sm">
-                    {formatMoney(product.price)}
-                  </p>
+                  <div className="mt-2">
+                    <ProductPrice product={product} />
+                  </div>
                 </div>
               </article>
             ))}
@@ -348,9 +371,9 @@ function Home() {
                   {quickAddProduct.name}
                 </h2>
 
-                <p className="mt-4 text-lg tracking-[0.12em] text-neutral-600">
-                  {formatMoney(quickAddProduct.price)}
-                </p>
+                <div className="mt-4">
+                  <ProductPrice product={quickAddProduct} large />
+                </div>
               </div>
 
               <div className="my-8 border-t border-neutral-200" />

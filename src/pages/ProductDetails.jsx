@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import { products } from "../data/products";
+
 import { useCart } from "../context/CartContext";
+import { products } from "../data/products";
 import { trackViewContent } from "../lib/metaPixel";
 
 const colorValues = {
@@ -26,33 +27,38 @@ const productFeatures = [
   "Made in Egypt",
 ];
 
-const accordionItems = [
-  {
-    title: "Product Description",
-    content:
-      "A premium TeeLab essential created with a clean silhouette, comfortable construction, and a timeless finish designed for everyday wear.",
-  },
-  {
-    title: "Size Guide",
-    content:
-      "Choose your usual size for a relaxed fit. Size down for a closer fit or size up for a more oversized silhouette.",
-  },
-  {
-    title: "Shipping & Delivery",
-    content:
-      "Orders are prepared within 1–2 business days. Delivery typically takes 2–5 business days depending on your location.",
-  },
-  {
-    title: "Returns & Exchanges",
-    content:
-      "Items can be exchanged within 14 days when unworn, unwashed, and returned with their original packaging and tags.",
-  },
-  {
-    title: "Care Instructions",
-    content:
-      "Wash inside out at 30°C with similar colors. Do not bleach. Avoid tumble drying and iron on low heat.",
-  },
-];
+const formatMoney = (value) =>
+  `${Number(value || 0).toLocaleString("en-EG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })} EGP`;
+
+function ProductPrice({ product, large = false }) {
+  const hasSale =
+    product.oldPrice && Number(product.oldPrice) > Number(product.price);
+
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+      <span
+        className={`tracking-[0.12em] ${
+          large ? "text-[15px] md:text-[17px]" : "text-xs"
+        } ${hasSale ? "text-red-500" : "text-neutral-600"}`}
+      >
+        {formatMoney(product.price)}
+      </span>
+
+      {hasSale && (
+        <span
+          className={`tracking-[0.1em] text-neutral-500 line-through ${
+            large ? "text-[14px] md:text-[16px]" : "text-xs"
+          }`}
+        >
+          {formatMoney(product.oldPrice)}
+        </span>
+      )}
+    </div>
+  );
+}
 
 function ProductDetails() {
   const { productId } = useParams();
@@ -84,7 +90,6 @@ function ProductDetails() {
   const [zoomed, setZoomed] = useState(false);
   const [imageVisible, setImageVisible] = useState(true);
   const [sizeModalOpen, setSizeModalOpen] = useState(false);
-  const [openAccordion, setOpenAccordion] = useState(null);
   const [touchStart, setTouchStart] = useState(null);
 
   useEffect(() => {
@@ -383,9 +388,9 @@ function ProductDetails() {
             {product.name}
           </h1>
 
-          <p className="mt-4 text-[15px] font-normal tracking-[0.12em] text-neutral-600 md:text-[17px]">
-            {Number(product.price).toFixed(2)} EGP
-          </p>
+          <div className="mt-4">
+            <ProductPrice product={product} large />
+          </div>
 
           <div className="my-8 h-px bg-[#E5E5E5]" />
 
@@ -515,52 +520,6 @@ function ProductDetails() {
         </div>
       </section>
 
-      {/* Accordions */}
-      {/* <section className="mx-auto max-w-[1700px] px-4 py-14 sm:px-6 lg:px-8 lg:py-24">
-        <div className="border-t border-[#E5E5E5]">
-          {accordionItems.map((item, index) => {
-            const isOpen = openAccordion === index;
-
-            return (
-              <div key={item.title} className="border-b border-[#E5E5E5]">
-                <button
-                  type="button"
-                  onClick={() => setOpenAccordion(isOpen ? null : index)}
-                  className="flex w-full items-center justify-between py-6 text-left"
-                  aria-expanded={isOpen}
-                >
-                  <span className="text-xs font-medium uppercase tracking-[0.18em]">
-                    {item.title}
-                  </span>
-
-                  <span
-                    className={`text-xl font-light transition-transform duration-300 ${
-                      isOpen ? "rotate-45" : "rotate-0"
-                    }`}
-                  >
-                    +
-                  </span>
-                </button>
-
-                <div
-                  className={`grid transition-all duration-500 ease-in-out ${
-                    isOpen
-                      ? "grid-rows-[1fr] opacity-100"
-                      : "grid-rows-[0fr] opacity-0"
-                  }`}
-                >
-                  <div className="overflow-hidden">
-                    <p className="max-w-3xl pb-7 text-sm leading-7 text-[#666]">
-                      {item.content}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section> */}
-
       {/* Related products */}
       {relatedProducts.length > 0 && (
         <section className="mx-auto max-w-[1700px] px-4 pb-24 sm:px-6 lg:px-8 lg:pb-32">
@@ -600,14 +559,14 @@ function ProductDetails() {
                   </button>
                 </div>
 
-                <Link to={`/products/${relatedProduct.id}`}>
+                <Link to={`/products/${relatedProduct.id}`} className="block">
                   <h3 className="mt-4 text-xs font-medium uppercase tracking-[0.15em]">
                     {relatedProduct.name}
                   </h3>
 
-                  <p className="mt-2 text-xs tracking-[0.1em] text-[#666]">
-                    {Number(relatedProduct.price).toFixed(2)} EGP
-                  </p>
+                  <div className="mt-2">
+                    <ProductPrice product={relatedProduct} />
+                  </div>
                 </Link>
               </article>
             ))}
@@ -671,6 +630,7 @@ function ProductDetails() {
                   ].map((row) => (
                     <tr key={row[0]} className="border-b border-[#E5E5E5]">
                       <td className="py-4 text-left text-[#111]">{row[0]}</td>
+
                       <td className="py-4">{row[1]}</td>
                       <td className="py-4">{row[2]}</td>
                       <td className="py-4">{row[3]}</td>
